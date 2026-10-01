@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Outfit } from "next/font/google";
 
 import "@/app/globals.css";
 import { siteConfig } from "@/config/site.config";
 import { AppProvider } from "@/providers/app-provider";
+import { cn } from "@/lib/utils";
+
+const outfitHeading = Outfit({subsets:['latin'],variable:'--font-heading'});
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -32,7 +37,7 @@ export default function RootLayout({
 	children,
 }: RootLayoutProps) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable, outfitHeading.variable)}>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}
 			>
