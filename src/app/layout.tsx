@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Outfit } from "next/font/google";
+import {
+	Inter,
+	Outfit,
+} from "next/font/google";
 
 import "@/app/globals.css";
 import { siteConfig } from "@/config/site.config";
 import { AppProvider } from "@/providers/app-provider";
-import { cn } from "@/lib/utils";
 
-const outfitHeading = Outfit({subsets:['latin'],variable:'--font-heading'});
-
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
-const geistSans = Geist({
-	variable: "--font-geist-sans",
+const inter = Inter({
 	subsets: ["latin"],
+	variable: "--font-sans",
+	display: "swap",
 });
 
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
+const outfit = Outfit({
 	subsets: ["latin"],
+	variable: "--font-heading",
+	display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -37,11 +37,15 @@ export default function RootLayout({
 	children,
 }: RootLayoutProps) {
 	return (
-		<html lang="en" suppressHydrationWarning className={cn("font-sans", inter.variable, outfitHeading.variable)}>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground antialiased`}
-			>
-				<AppProvider>{children}</AppProvider>
+		<html
+			lang="en"
+			suppressHydrationWarning
+			className={`${inter.variable} ${outfit.variable}`}
+		>
+			<body className="min-h-screen bg-background text-foreground antialiased">
+				<AppProvider>
+					{children}
+				</AppProvider>
 			</body>
 		</html>
 	);

@@ -1,9 +1,5 @@
-import { DashboardSkeleton } from "@/components/skeletons/dashboard-skeleton";
+import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 
 export default function Loading() {
-	return (
-		<main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6">
-			<DashboardSkeleton />
-		</main>
-	);
+	return <PageSkeleton />;
 }

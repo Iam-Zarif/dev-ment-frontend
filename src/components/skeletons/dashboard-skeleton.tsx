@@ -1,6 +1,6 @@
-import { CardSkeleton } from "./card-skeleton";
-import { Skeleton } from "./skeleton";
-import { TableSkeleton } from "./table-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CardSkeleton } from "@/components/skeletons/card-skeleton";
+import { TableSkeleton } from "@/components/skeletons/table-skeleton";
 
 export function DashboardSkeleton() {
 	return (
@@ -11,7 +11,9 @@ export function DashboardSkeleton() {
 			</div>
 
 			<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-				{Array.from({ length: 4 }).map((_, index) => (
+				{Array.from({
+					length: 4,
+				}).map((_, index) => (
 					<CardSkeleton key={index} />
 				))}
 			</div>

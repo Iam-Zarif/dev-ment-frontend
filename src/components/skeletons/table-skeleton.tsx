@@ -1,10 +1,12 @@
-import { Skeleton } from "./skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type TableSkeletonProps = {
 	rows?: number;
 };
 
-export function TableSkeleton({ rows = 6 }: TableSkeletonProps) {
+export function TableSkeleton({
+	rows = 6,
+}: TableSkeletonProps) {
 	return (
 		<div className="overflow-hidden rounded-xl border bg-card">
 			<div className="border-b p-4">
@@ -12,15 +14,17 @@ export function TableSkeleton({ rows = 6 }: TableSkeletonProps) {
 			</div>
 
 			<div className="divide-y">
-				{Array.from({ length: rows }).map((_, index) => (
+				{Array.from({
+					length: rows,
+				}).map((_, index) => (
 					<div
 						key={index}
-						className="grid grid-cols-4 gap-4 p-4"
+						className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-4"
 					>
 						<Skeleton className="h-5 w-full" />
 						<Skeleton className="h-5 w-full" />
-						<Skeleton className="h-5 w-3/4" />
-						<Skeleton className="h-5 w-1/2" />
+						<Skeleton className="hidden h-5 w-3/4 sm:block" />
+						<Skeleton className="hidden h-5 w-1/2 sm:block" />
 					</div>
 				))}
 			</div>
