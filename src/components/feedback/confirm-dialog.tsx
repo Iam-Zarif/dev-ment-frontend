@@ -44,15 +44,23 @@ export function ConfirmDialog({
 	loading = false,
 	onConfirm,
 }: ConfirmDialogProps) {
-	const handleConfirm = (
-		event: React.MouseEvent<HTMLButtonElement>,
-	) => {
-		event.preventDefault();
+	const handleConfirm = async (
+	event: React.MouseEvent<HTMLButtonElement>,
+) => {
+	event.preventDefault();
 
-		if (!loading) {
-			void onConfirm();
-		}
-	};
+	if (loading) {
+		return;
+	}
+
+	try {
+		await onConfirm();
+		onOpenChange(false);
+	} catch {
+		// Parent mutation/toast handles the error.
+		// Keep dialog open so the user can retry.
+	}
+};
 
 	return (
 		<AlertDialog

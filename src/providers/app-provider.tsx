@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
-import { UIProvider } from "@/contexts/ui-context";
+import { AuthBootstrap } from "@/modules/auth/views/auth-bootstrap";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -17,14 +17,14 @@ export function AppProvider({
 	return (
 		<ThemeProvider>
 			<QueryProvider>
-				<UIProvider>
-					{children}
+				<AuthBootstrap />
 
-					<Toaster
-						position="top-right"
-						closeButton
-					/>
-				</UIProvider>
+				{children}
+
+				<Toaster
+					position="top-right"
+					closeButton
+				/>
 			</QueryProvider>
 		</ThemeProvider>
 	);

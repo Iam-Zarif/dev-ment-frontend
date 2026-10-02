@@ -10,13 +10,13 @@ import { AppProvider } from "@/providers/app-provider";
 
 const inter = Inter({
 	subsets: ["latin"],
-	variable: "--font-sans",
+	variable: "--font-inter",
 	display: "swap",
 });
 
 const outfit = Outfit({
 	subsets: ["latin"],
-	variable: "--font-heading",
+	variable: "--font-outfit",
 	display: "swap",
 });
 
