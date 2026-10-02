@@ -1,7 +1,4 @@
-import {
-	Inbox,
-	type LucideIcon,
-} from "lucide-react";
+import { Inbox, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -32,21 +29,11 @@ export function EmptyState({
 				<Icon className="size-5" />
 			</div>
 
-			<h3 className="mt-4 font-heading text-lg font-medium">
-				{title}
-			</h3>
+			<h3 className="mt-4 font-heading text-lg font-medium">{title}</h3>
 
-			{description && (
-				<p className="mt-2 max-w-md text-sm text-muted-foreground">
-					{description}
-				</p>
-			)}
+			{description && <p className="mt-2 max-w-md text-sm text-muted-foreground">{description}</p>}
 
-			{action && (
-				<div className="mt-5">
-					{action}
-				</div>
-			)}
+			{action && <div className="mt-5">{action}</div>}
 		</div>
 	);
 }

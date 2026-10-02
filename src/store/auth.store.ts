@@ -1,76 +1,59 @@
 import { create } from "zustand";
 
-import type {
-	AuthSessionData,
-	AuthStatus,
-	AuthUser,
-} from "@/types/auth.types";
+import type { AuthSessionData, AuthStatus, AuthUser } from "@/types/auth.types";
 
 type AuthState = {
 	user: AuthUser | null;
 	accessToken: string | null;
 	status: AuthStatus;
 
-	setSession: (
-		session: AuthSessionData,
-	) => void;
+	setSession: (session: AuthSessionData) => void;
 
-	setUser: (
-		user: AuthUser | null,
-	) => void;
+	setUser: (user: AuthUser | null) => void;
 
-	setAccessToken: (
-		token: string | null,
-	) => void;
+	setAccessToken: (token: string | null) => void;
 
-	setStatus: (
-		status: AuthStatus,
-	) => void;
+	setStatus: (status: AuthStatus) => void;
 
 	clearSession: () => void;
 };
 
-export const useAuthStore =
-	create<AuthState>((set) => ({
-		user: null,
-		accessToken: null,
-		status: "idle",
+export const useAuthStore = create<AuthState>((set) => ({
+	user: null,
+	accessToken: null,
+	status: "idle",
 
-		setSession: (session) => {
-			set({
-				user: session.user,
-				accessToken:
-					session.accessToken,
-				status: "authenticated",
-			});
-		},
+	setSession: (session) => {
+		set({
+			user: session.user,
+			accessToken: session.accessToken,
+			status: "authenticated",
+		});
+	},
 
-		setUser: (user) => {
-			set({
-				user,
-			});
-		},
+	setUser: (user) => {
+		set({
+			user,
+		});
+	},
 
-		setAccessToken: (
+	setAccessToken: (accessToken) => {
+		set({
 			accessToken,
-		) => {
-			set({
-				accessToken,
-			});
-		},
+		});
+	},
 
-		setStatus: (status) => {
-			set({
-				status,
-			});
-		},
+	setStatus: (status) => {
+		set({
+			status,
+		});
+	},
 
-		clearSession: () => {
-			set({
-				user: null,
-				accessToken: null,
-				status:
-					"unauthenticated",
-			});
-		},
-	}));
+	clearSession: () => {
+		set({
+			user: null,
+			accessToken: null,
+			status: "unauthenticated",
+		});
+	},
+}));

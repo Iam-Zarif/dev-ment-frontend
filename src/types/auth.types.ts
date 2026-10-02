@@ -13,15 +13,9 @@ export type AuthSessionData = {
 	accessToken: string;
 };
 
-export type AuthStatus =
-	| "idle"
-	| "loading"
-	| "authenticated"
-	| "unauthenticated";
+export type AuthStatus = "idle" | "loading" | "authenticated" | "unauthenticated";
 
-export type OtpPurpose =
-	| "CANDIDATE_REGISTRATION"
-	| "RECRUITER_REGISTRATION";
+export type OtpPurpose = "CANDIDATE_REGISTRATION" | "RECRUITER_REGISTRATION";
 
 export type LoginInput = {
 	email: string;

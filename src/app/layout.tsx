@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import {
-	Inter,
-	Outfit,
-} from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 
 import "@/app/globals.css";
 import { siteConfig } from "@/config/site.config";
@@ -33,19 +30,11 @@ type RootLayoutProps = Readonly<{
 	children: React.ReactNode;
 }>;
 
-export default function RootLayout({
-	children,
-}: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
 	return (
-		<html
-			lang="en"
-			suppressHydrationWarning
-			className={`${inter.variable} ${outfit.variable}`}
-		>
+		<html lang="en" suppressHydrationWarning className={`${inter.variable} ${outfit.variable}`}>
 			<body className="min-h-screen bg-background text-foreground antialiased">
-				<AppProvider>
-					{children}
-				</AppProvider>
+				<AppProvider>{children}</AppProvider>
 			</body>
 		</html>
 	);

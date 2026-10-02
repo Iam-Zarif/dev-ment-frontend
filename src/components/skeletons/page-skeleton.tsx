@@ -12,10 +12,7 @@ export function PageSkeleton() {
 				{Array.from({
 					length: 6,
 				}).map((_, index) => (
-					<div
-						key={index}
-						className="space-y-4 rounded-xl border bg-card p-5"
-					>
+					<div key={index} className="space-y-4 rounded-xl border bg-card p-5">
 						<Skeleton className="h-5 w-2/3" />
 						<Skeleton className="h-4 w-full" />
 						<Skeleton className="h-4 w-4/5" />

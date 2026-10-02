@@ -20,13 +20,9 @@ export function ErrorState({
 					<AlertTriangle className="size-6" />
 				</div>
 
-				<h2 className="text-xl font-semibold">
-					{title}
-				</h2>
+				<h2 className="text-xl font-semibold">{title}</h2>
 
-				<p className="mt-2 text-sm text-muted-foreground">
-					{description}
-				</p>
+				<p className="mt-2 text-sm text-muted-foreground">{description}</p>
 
 				{onRetry && (
 					<button

@@ -1,11 +1,6 @@
-export type UserRole =
-	| "ADMIN"
-	| "RECRUITER"
-	| "CANDIDATE";
+export type UserRole = "ADMIN" | "RECRUITER" | "CANDIDATE";
 
-export type SortOrder =
-	| "asc"
-	| "desc";
+export type SortOrder = "asc" | "desc";
 
 export type PaginationQuery = {
 	page?: number;

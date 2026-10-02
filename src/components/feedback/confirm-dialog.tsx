@@ -1,8 +1,6 @@
 "use client";
 
-import {
-	AlertTriangle,
-} from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 import {
 	AlertDialog,
@@ -44,63 +42,44 @@ export function ConfirmDialog({
 	loading = false,
 	onConfirm,
 }: ConfirmDialogProps) {
-	const handleConfirm = async (
-	event: React.MouseEvent<HTMLButtonElement>,
-) => {
-	event.preventDefault();
+	const handleConfirm = async (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
 
-	if (loading) {
-		return;
-	}
+		if (loading) {
+			return;
+		}
 
-	try {
-		await onConfirm();
-		onOpenChange(false);
-	} catch {
-		// Parent mutation/toast handles the error.
-		// Keep dialog open so the user can retry.
-	}
-};
+		try {
+			await onConfirm();
+			onOpenChange(false);
+		} catch {
+			// Parent mutation/toast handles the error.
+			// Keep dialog open so the user can retry.
+		}
+	};
 
 	return (
-		<AlertDialog
-			open={open}
-			onOpenChange={onOpenChange}
-		>
+		<AlertDialog open={open} onOpenChange={onOpenChange}>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogMedia>
 						<AlertTriangle className="size-5" />
 					</AlertDialogMedia>
 
-					<AlertDialogTitle>
-						{title}
-					</AlertDialogTitle>
+					<AlertDialogTitle>{title}</AlertDialogTitle>
 
-					<AlertDialogDescription>
-						{description}
-					</AlertDialogDescription>
+					<AlertDialogDescription>{description}</AlertDialogDescription>
 				</AlertDialogHeader>
 
 				<AlertDialogFooter>
-					<AlertDialogCancel
-						disabled={loading}
-					>
-						{cancelLabel}
-					</AlertDialogCancel>
+					<AlertDialogCancel disabled={loading}>{cancelLabel}</AlertDialogCancel>
 
 					<AlertDialogAction
-						variant={
-							destructive
-								? "destructive"
-								: "default"
-						}
+						variant={destructive ? "destructive" : "default"}
 						disabled={loading}
 						onClick={handleConfirm}
 					>
-						{loading && (
-							<Spinner className="mr-1 size-4" />
-						)}
+						{loading && <Spinner className="mr-1 size-4" />}
 
 						{confirmLabel}
 					</AlertDialogAction>

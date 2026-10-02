@@ -11,9 +11,7 @@ type AppProviderProps = {
 	children: ReactNode;
 };
 
-export function AppProvider({
-	children,
-}: AppProviderProps) {
+export function AppProvider({ children }: AppProviderProps) {
 	return (
 		<ThemeProvider>
 			<QueryProvider>
@@ -21,10 +19,7 @@ export function AppProvider({
 
 				{children}
 
-				<Toaster
-					position="top-right"
-					closeButton
-				/>
+				<Toaster position="top-right" closeButton />
 			</QueryProvider>
 		</ThemeProvider>
 	);

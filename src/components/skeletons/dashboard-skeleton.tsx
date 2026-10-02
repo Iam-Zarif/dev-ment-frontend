@@ -1,6 +1,6 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { CardSkeleton } from "@/components/skeletons/card-skeleton";
 import { TableSkeleton } from "@/components/skeletons/table-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function DashboardSkeleton() {
 	return (

@@ -1,17 +1,10 @@
 "use client";
 
-import {
-	usePathname,
-	useRouter,
-	useSearchParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
 import { PAGINATION } from "@/lib/constants";
-import {
-	parsePositiveInteger,
-	updateQueryParams,
-} from "@/utils/query-params";
+import { parsePositiveInteger, updateQueryParams } from "@/utils/query-params";
 
 type UsePaginationOptions = {
 	defaultPage?: number;
@@ -26,31 +19,17 @@ export function usePagination({
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 
-	const page = parsePositiveInteger(
-		searchParams.get("page"),
-		defaultPage,
-	);
+	const page = parsePositiveInteger(searchParams.get("page"), defaultPage);
 
-	const limit = parsePositiveInteger(
-		searchParams.get("limit"),
-		defaultLimit,
-	);
+	const limit = parsePositiveInteger(searchParams.get("limit"), defaultLimit);
 
 	const updateUrl = useCallback(
 		(updates: Record<string, string | number>) => {
-			const queryString = updateQueryParams(
-				searchParams.toString(),
-				updates,
-			);
+			const queryString = updateQueryParams(searchParams.toString(), updates);
 
-			router.replace(
-				queryString
-					? `${pathname}?${queryString}`
-					: pathname,
-				{
-					scroll: false,
-				},
-			);
+			router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
+				scroll: false,
+			});
 		},
 		[pathname, router, searchParams],
 	);
