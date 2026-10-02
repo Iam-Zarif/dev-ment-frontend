@@ -1,17 +1,17 @@
 import axios from "axios";
 
+import { env } from "@/lib/env";
+
 export const apiClient = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL,
+	baseURL: env.NEXT_PUBLIC_API_URL,
 	withCredentials: true,
+	timeout: 15_000,
 	headers: {
 		"Content-Type": "application/json",
 	},
-	timeout: 15000,
 });
 
 apiClient.interceptors.response.use(
 	(response) => response,
-	(error) => {
-		return Promise.reject(error);
-	},
+	(error) => Promise.reject(error),
 );
