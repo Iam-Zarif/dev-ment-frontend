@@ -1,4 +1,4 @@
-import { LayoutDashboard, type LucideIcon } from "lucide-react";
+import { ClipboardList, LayoutDashboard, type LucideIcon } from "lucide-react";
 
 import { ROUTES, USER_ROLES } from "@/lib/constants";
 import type { UserRole } from "@/types/common.types";
@@ -15,10 +15,7 @@ export const ROLE_LABELS: Record<UserRole, string> = {
 	[USER_ROLES.CANDIDATE]: "Candidate",
 };
 
-export const DASHBOARD_NAVIGATION: Record<
-	UserRole,
-	readonly DashboardNavItem[]
-> = {
+export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]> = {
 	[USER_ROLES.ADMIN]: [
 		{
 			label: "Overview",
@@ -32,6 +29,11 @@ export const DASHBOARD_NAVIGATION: Record<
 			label: "Overview",
 			href: ROUTES.RECRUITER,
 			icon: LayoutDashboard,
+		},
+		{
+			label: "Assessments",
+			href: ROUTES.RECRUITER_ASSESSMENTS,
+			icon: ClipboardList,
 		},
 	],
 

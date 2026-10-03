@@ -1,21 +1,12 @@
 "use client";
 
-import {
-	useEffect,
-	type ReactNode,
-} from "react";
-import {
-	usePathname,
-	useRouter,
-} from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { type ReactNode, useEffect } from "react";
 
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { DashboardSidebar } from "@/components/layout/sidebar";
 import { DashboardSkeleton } from "@/components/skeletons/dashboard-skeleton";
-import {
-	SidebarInset,
-	SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getRoleHome } from "@/config/roles.config";
 import { useAuth } from "@/hooks/use-auth";
 import { ROUTES } from "@/lib/constants";
@@ -24,29 +15,17 @@ type DashboardLayoutProps = {
 	children: ReactNode;
 };
 
-export default function DashboardLayout({
-	children,
-}: DashboardLayoutProps) {
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 
-	const {
-		user,
-		status,
-	} = useAuth();
+	const { user, status } = useAuth();
 
-	const roleHome = user
-		? getRoleHome(user.role)
-		: null;
+	const roleHome = user ? getRoleHome(user.role) : null;
 
-	const roleMismatch =
-		Boolean(
-			roleHome &&
-				pathname !== roleHome &&
-				!pathname.startsWith(
-					`${roleHome}/`,
-				),
-		);
+	const roleMismatch = Boolean(
+		roleHome && pathname !== roleHome && !pathname.startsWith(`${roleHome}/`),
+	);
 
 	useEffect(() => {
 		if (status === "unauthenticated") {
@@ -54,24 +33,12 @@ export default function DashboardLayout({
 			return;
 		}
 
-		if (
-			status === "authenticated" &&
-			roleMismatch &&
-			roleHome
-		) {
+		if (status === "authenticated" && roleMismatch && roleHome) {
 			router.replace(roleHome);
 		}
-	}, [
-		roleHome,
-		roleMismatch,
-		router,
-		status,
-	]);
+	}, [roleHome, roleMismatch, router, status]);
 
-	if (
-		status === "idle" ||
-		status === "loading"
-	) {
+	if (status === "idle" || status === "loading") {
 		return (
 			<div className="p-6">
 				<DashboardSkeleton />
@@ -79,11 +46,7 @@ export default function DashboardLayout({
 		);
 	}
 
-	if (
-		status !== "authenticated" ||
-		!user ||
-		roleMismatch
-	) {
+	if (status !== "authenticated" || !user || roleMismatch) {
 		return null;
 	}
 
@@ -95,9 +58,7 @@ export default function DashboardLayout({
 				<DashboardHeader />
 
 				<main className="flex-1 p-4 sm:p-6 lg:p-8">
-					<div className="mx-auto w-full max-w-7xl">
-						{children}
-					</div>
+					<div className="mx-auto w-full max-w-7xl">{children}</div>
 				</main>
 			</SidebarInset>
 		</SidebarProvider>

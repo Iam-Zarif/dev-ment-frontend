@@ -12,6 +12,7 @@ export const ROUTES = {
 	ADMIN: "/admin",
 	RECRUITER: "/recruiter",
 	CANDIDATE: "/candidate",
+	RECRUITER_ASSESSMENTS: "/recruiter/assessments",
 
 	FORGOT_PASSWORD: "/forgot-password",
 	RESET_PASSWORD: "/reset-password",

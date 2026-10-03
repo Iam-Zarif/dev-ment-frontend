@@ -6,9 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-	SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { ROUTES } from "@/lib/constants";
 import { formatError } from "@/utils/format-error";
@@ -17,8 +15,7 @@ export function DashboardHeader() {
 	const router = useRouter();
 	const { logout } = useAuth();
 
-	const [isLoggingOut, setIsLoggingOut] =
-		useState(false);
+	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
 	const handleLogout = async () => {
 		setIsLoggingOut(true);
@@ -45,14 +42,10 @@ export function DashboardHeader() {
 					variant="ghost"
 					size="sm"
 					disabled={isLoggingOut}
-					onClick={() =>
-						void handleLogout()
-					}
+					onClick={() => void handleLogout()}
 				>
 					<LogOut className="size-4" />
-					<span className="hidden sm:inline">
-						Logout
-					</span>
+					<span className="hidden sm:inline">Logout</span>
 				</Button>
 			</div>
 		</header>
