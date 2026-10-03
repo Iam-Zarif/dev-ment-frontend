@@ -56,5 +56,47 @@ export type AssessmentListParams = {
 	sortBy: AssessmentSortField;
 	sortOrder: SortOrder;
 };
+export type CreateAssessmentDraftInput = {
+	title: string;
+	jobRole: string;
+	skills: string[];
+	difficulty: DifficultyLevel;
+
+	durationMinutes: number;
+	passPercentage: number;
+	suspiciousThreshold: number;
+
+	applicationDeadline?: string | null;
+	opensAt?: string | null;
+	closesAt?: string | null;
+};
+
+export type AssessmentSaveState = {
+	state: "SAVED";
+	mode: "AUTO" | "MANUAL";
+	savedAt: string;
+};
+
+export type PublishReadinessIssue = {
+	path?: string;
+	code?: string;
+	message: string;
+};
+
+export type PublishReadiness = {
+	canPublish: boolean;
+	issues: PublishReadinessIssue[];
+};
+
+export type AssessmentDraftResult = {
+	id: string;
+	status: AssessmentStatus;
+	createdAt: string;
+	updatedAt: string;
+
+	saveState: AssessmentSaveState;
+
+	publishReadiness: PublishReadiness;
+};
 
 export type AssessmentListData = PaginatedData<RecruiterAssessment>;
