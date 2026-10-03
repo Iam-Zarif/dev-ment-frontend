@@ -66,6 +66,7 @@ const shouldSkipRefresh = (url?: string) => {
 		API_ENDPOINTS.auth.verifyOtp,
 		API_ENDPOINTS.auth.resendOtp,
 		API_ENDPOINTS.auth.forgotPassword,
+		API_ENDPOINTS.auth.verifyPasswordResetOtp,
 		API_ENDPOINTS.auth.resetPassword,
 	].some((endpoint) => url.includes(endpoint));
 };

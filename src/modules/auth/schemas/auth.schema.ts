@@ -67,7 +67,7 @@ export const verifyOtpSchema = z.object({
 
 	otp: z.string().regex(/^\d{6}$/, "Verification code must contain 6 digits"),
 
-	purpose: z.enum(["CANDIDATE_REGISTRATION", "RECRUITER_REGISTRATION"]),
+	purpose: z.enum(["CANDIDATE_REGISTRATION", "RECRUITER_REGISTRATION", "PASSWORD_RESET"]),
 });
 
 export const forgotPasswordSchema = z.object({
@@ -76,8 +76,6 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z
 	.object({
-		token: z.string().trim().min(32, "Password reset token is invalid"),
-
 		password: passwordSchema,
 		confirmPassword: passwordSchema,
 	})

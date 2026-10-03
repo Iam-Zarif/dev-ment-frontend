@@ -10,6 +10,7 @@ export const API_ENDPOINTS = {
 		me: "/auth/me",
 		google: "/auth/google",
 		forgotPassword: "/auth/forgot-password",
+		verifyPasswordResetOtp: "/auth/verify-password-reset-otp",
 		resetPassword: "/auth/reset-password",
 	},
 

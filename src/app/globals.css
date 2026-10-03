@@ -130,3 +130,14 @@
 		@apply font-sans;
 	}
 }
+
+/* Share Sonner's theme-aware error palette across all failed toasts. */
+[data-sonner-toast][data-type="error"] {
+	--normal-bg: var(--error-bg);
+	--normal-text: var(--error-text);
+	--normal-border: var(--error-border);
+}
+
+[data-sonner-toast][data-type="error"] [data-description] {
+	color: var(--error-text);
+}

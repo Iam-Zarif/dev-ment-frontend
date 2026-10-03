@@ -12,6 +12,7 @@ import type {
 	ResendOtpInput,
 	ResetPasswordInput,
 	VerifyOtpInput,
+	VerifyPasswordResetOtpInput,
 } from "@/types/auth.types";
 
 async function login(input: LoginInput) {
@@ -83,11 +84,19 @@ async function logout() {
 }
 
 async function forgotPassword(input: ForgotPasswordInput) {
-	const response = await apiClient.post<ApiResponse<null>>(
+	const response = await apiClient.post<ApiResponse<RegistrationResult>>(
 		API_ENDPOINTS.auth.forgotPassword,
 		input,
 	);
 
+	return response.data;
+}
+
+async function verifyPasswordResetOtp(input: VerifyPasswordResetOtpInput) {
+	const response = await apiClient.post<ApiResponse<null>>(
+		API_ENDPOINTS.auth.verifyPasswordResetOtp,
+		input,
+	);
 	return response.data;
 }
 
@@ -107,5 +116,6 @@ export const authService = {
 	getMe,
 	logout,
 	forgotPassword,
+	verifyPasswordResetOtp,
 	resetPassword,
 };

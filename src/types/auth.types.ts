@@ -15,7 +15,7 @@ export type AuthSessionData = {
 
 export type AuthStatus = "idle" | "loading" | "authenticated" | "unauthenticated";
 
-export type OtpPurpose = "CANDIDATE_REGISTRATION" | "RECRUITER_REGISTRATION";
+export type OtpPurpose = "CANDIDATE_REGISTRATION" | "RECRUITER_REGISTRATION" | "PASSWORD_RESET";
 
 export type LoginInput = {
 	email: string;
@@ -47,12 +47,12 @@ export type RegistrationResult = {
 export type VerifyOtpInput = {
 	email: string;
 	otp: string;
-	purpose: OtpPurpose;
+	purpose: Exclude<OtpPurpose, "PASSWORD_RESET">;
 };
 
 export type ResendOtpInput = {
 	email: string;
-	purpose: OtpPurpose;
+	purpose: Exclude<OtpPurpose, "PASSWORD_RESET">;
 };
 
 export type ForgotPasswordInput = {
@@ -60,7 +60,8 @@ export type ForgotPasswordInput = {
 };
 
 export type ResetPasswordInput = {
-	token: string;
 	password: string;
 	confirmPassword: string;
 };
+
+export type VerifyPasswordResetOtpInput = { email: string; otp: string };
