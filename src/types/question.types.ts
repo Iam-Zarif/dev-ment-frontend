@@ -5,6 +5,10 @@ export const QUESTION_TYPES = ["MCQ", "SHORT_TEXT", "LONG_TEXT", "CODING"] as co
 
 export type QuestionType = (typeof QUESTION_TYPES)[number];
 
+export const MCQ_SELECTION_MODES = ["SINGLE", "MULTIPLE"] as const;
+
+export type McqSelectionMode = (typeof MCQ_SELECTION_MODES)[number];
+
 export const QUESTION_SORT_FIELDS = [
 	"createdAt",
 	"updatedAt",
@@ -19,12 +23,10 @@ export type RecruiterQuestion = {
 	type: QuestionType;
 	contentHtml: string;
 	difficulty: DifficultyLevel;
-
 	defaultMarks: number | string;
 	evaluationRubric: string | null;
 
-	selectionMode: "SINGLE" | "MULTIPLE" | null;
-
+	selectionMode: McqSelectionMode | null;
 	allowedLanguages: string[];
 
 	timeLimitMs: number | null;
@@ -60,3 +62,38 @@ export type QuestionListParams = {
 };
 
 export type QuestionListData = PaginatedData<RecruiterQuestion>;
+
+type CreateQuestionBase = {
+	contentHtml: string;
+	difficulty: DifficultyLevel;
+	defaultMarks: number;
+	evaluationRubric?: string | null;
+};
+
+export type CreateQuestionInput =
+	| (CreateQuestionBase & {
+			type: "SHORT_TEXT" | "LONG_TEXT";
+	  })
+	| (CreateQuestionBase & {
+			type: "MCQ";
+			selectionMode: McqSelectionMode;
+			options: Array<{
+				optionHtml: string;
+				isCorrect: boolean;
+				sortOrder: number;
+			}>;
+	  })
+	| (CreateQuestionBase & {
+			type: "CODING";
+			allowedLanguages: string[];
+			starterCode?: Record<string, string> | null;
+			timeLimitMs: number;
+			memoryLimitKb: number;
+			testCases: Array<{
+				inputText?: string | null;
+				expectedOutput: string;
+				isHidden: boolean;
+				weight: number;
+				sortOrder: number;
+			}>;
+	  });

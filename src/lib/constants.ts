@@ -14,6 +14,7 @@ export const ROUTES = {
 	CANDIDATE: "/candidate",
 	RECRUITER_ASSESSMENTS_NEW: "/recruiter/assessments/new",
 	RECRUITER_QUESTIONS: "/recruiter/questions",
+	RECRUITER_QUESTIONS_NEW: "/recruiter/questions/new",
 	RECRUITER_ASSESSMENTS: "/recruiter/assessments",
 
 	FORGOT_PASSWORD: "/forgot-password",

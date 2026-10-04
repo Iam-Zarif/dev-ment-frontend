@@ -1,10 +1,13 @@
 "use client";
-
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { PageHeader } from "@/components/data-display/page-header";
 import { DataPagination } from "@/components/data-display/pagination";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { TableSkeleton } from "@/components/skeletons/table-skeleton";
+import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/constants";
 import { useQuestionList } from "@/modules/question/hooks/use-question-list";
 import { QuestionListFilters } from "@/modules/question/views/question-list-filters";
 import { QuestionListTable } from "@/modules/question/views/question-list-table";
@@ -27,7 +30,17 @@ export function QuestionListView() {
 
 	return (
 		<div className="space-y-6">
-			<PageHeader title="Question bank" />
+			<PageHeader
+				title="Question bank"
+				action={
+					<Button asChild>
+						<Link href={ROUTES.RECRUITER_QUESTIONS_NEW}>
+							<Plus className="size-4" />
+							New question
+						</Link>
+					</Button>
+				}
+			/>
 
 			<QuestionListFilters
 				search={search}
