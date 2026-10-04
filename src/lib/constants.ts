@@ -12,6 +12,7 @@ export const ROUTES = {
 	ADMIN: "/admin",
 	RECRUITER: "/recruiter",
 	CANDIDATE: "/candidate",
+	RECRUITER_ASSESSMENT: (id: string) => `/recruiter/assessments/${id}`,
 	RECRUITER_ASSESSMENTS_NEW: "/recruiter/assessments/new",
 	RECRUITER_QUESTIONS: "/recruiter/questions",
 	RECRUITER_QUESTIONS_NEW: "/recruiter/questions/new",

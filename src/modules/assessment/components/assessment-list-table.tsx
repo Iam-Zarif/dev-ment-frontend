@@ -1,3 +1,4 @@
+import { Link } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Table,
@@ -7,6 +8,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { ROUTES } from "@/lib/constants";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
 import type { RecruiterAssessment } from "@/types/assessment.types";
 import { formatRelativeTime } from "@/utils/format-date";
@@ -44,7 +46,12 @@ export function AssessmentListTable({ items }: { items: RecruiterAssessment[] })
 					{items.map((assessment) => (
 						<TableRow key={assessment.id}>
 							<TableCell className="min-w-52 whitespace-normal">
-								<p className="font-medium">{assessment.title || "Untitled assessment"}</p>
+								<Link
+									href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
+									className="font-medium hover:underline"
+								>
+									{assessment.title || "Untitled assessment"}
+								</Link>
 
 								<p className="mt-0.5 text-xs text-muted-foreground">
 									{assessment.jobRole || "No job role"}

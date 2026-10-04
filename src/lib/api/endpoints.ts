@@ -17,8 +17,18 @@ export const API_ENDPOINTS = {
 	assessments: {
 		root: "/assessments",
 		draft: "/assessments/draft",
+
 		byId: (id: string) => `/assessments/${id}`,
+
 		draftById: (id: string) => `/assessments/${id}/draft`,
+
+		questions: (id: string) => `/assessments/${id}/questions`,
+
+		questionById: (id: string, assessmentQuestionId: string) =>
+			`/assessments/${id}/questions/${assessmentQuestionId}`,
+
+		questionOrder: (id: string) => `/assessments/${id}/questions/order`,
+
 		publish: (id: string) => `/assessments/${id}/publish`,
 	},
 

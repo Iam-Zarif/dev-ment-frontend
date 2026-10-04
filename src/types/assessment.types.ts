@@ -1,4 +1,5 @@
 import type { PaginatedData, SortOrder } from "@/types/common.types";
+import type { RecruiterQuestion } from "./question.types";
 
 export const ASSESSMENT_STATUSES = ["DRAFT", "PUBLISHED", "CLOSED", "ARCHIVED"] as const;
 
@@ -97,6 +98,61 @@ export type AssessmentDraftResult = {
 	saveState: AssessmentSaveState;
 
 	publishReadiness: PublishReadiness;
+};
+export type AssessmentQuestionItem = {
+	id: string;
+	questionId: string;
+	sortOrder: number;
+	marks: number | string;
+	createdAt: string;
+
+	question: Pick<RecruiterQuestion, "id" | "type" | "contentHtml" | "difficulty" | "defaultMarks">;
+};
+
+export type AssessmentDetails = {
+	id: string;
+
+	title: string;
+	jobRole: string;
+
+	descriptionHtml: string | null;
+	instructionsHtml: string | null;
+
+	skills: string[];
+	difficulty: DifficultyLevel;
+	status: AssessmentStatus;
+
+	durationMinutes: number;
+	passPercentage: number | string;
+	suspiciousThreshold: number;
+
+	applicationDeadline: string | null;
+	opensAt: string | null;
+	closesAt: string | null;
+
+	creditConsumedAt: string | null;
+	publishedAt: string | null;
+	closedAt: string | null;
+
+	createdAt: string;
+	updatedAt: string;
+
+	company: {
+		id: string;
+		name: string;
+		domain: string;
+	};
+
+	assessmentQuestions: AssessmentQuestionItem[];
+
+	totalMarks: number;
+
+	publishReadiness: PublishReadiness | null;
+};
+
+export type AttachAssessmentQuestionInput = {
+	questionId: string;
+	marks: number;
 };
 
 export type AssessmentListData = PaginatedData<RecruiterAssessment>;
