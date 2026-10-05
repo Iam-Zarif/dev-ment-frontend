@@ -4,6 +4,7 @@ import type { ApiResponse } from "@/types/api.types";
 import type {
 	ApplicationCreated,
 	ApplyAssessmentInput,
+	CandidateApplicationDetails,
 	CandidateApplicationListData,
 	CandidateApplicationListParams,
 } from "@/types/application.types";
@@ -28,7 +29,16 @@ async function getMine(params: CandidateApplicationListParams) {
 	return response.data.data;
 }
 
+async function getMineById(applicationId: string) {
+	const response = await apiClient.get<ApiResponse<CandidateApplicationDetails>>(
+		API_ENDPOINTS.applications.mineById(applicationId),
+	);
+
+	return response.data.data;
+}
+
 export const applicationService = {
 	apply,
 	getMine,
+	getMineById,
 };

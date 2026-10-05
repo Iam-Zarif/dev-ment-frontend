@@ -13,6 +13,9 @@ export const ROUTES = {
 	RECRUITER: "/recruiter",
 	CANDIDATE: "/candidate",
 	CANDIDATE_ASSESSMENTS: "/candidate/assessments",
+	CANDIDATE_APPLICATIONS: "/candidate/applications",
+
+	CANDIDATE_APPLICATION: (id: string) => `/candidate/applications/${id}`,
 
 	CANDIDATE_ASSESSMENT: (id: string) => `/candidate/assessments/${id}`,
 	RECRUITER_ASSESSMENT: (id: string) => `/recruiter/assessments/${id}`,

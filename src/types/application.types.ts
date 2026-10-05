@@ -76,5 +76,47 @@ export type CandidateApplicationListParams = {
 	assessmentId?: string;
 	search?: string;
 };
+export type CandidateApplicationDetails = {
+	id: string;
+	status: ApplicationStatus;
+
+	coverNote: string | null;
+	rejectionReason: string | null;
+
+	reviewedAt: string | null;
+	appliedAt: string;
+	updatedAt: string;
+
+	assessment: {
+		id: string;
+		title: string;
+		jobRole: string;
+
+		descriptionHtml: string | null;
+		skills: string[];
+
+		difficulty: DifficultyLevel;
+		durationMinutes: number;
+
+		applicationDeadline: string | null;
+		opensAt: string | null;
+		closesAt: string | null;
+
+		company: {
+			id: string;
+			name: string;
+			logoUrl: string | null;
+			websiteUrl: string | null;
+		};
+	};
+
+	invitation: {
+		id: string;
+		status: string;
+		expiresAt: string;
+		sentAt: string;
+		acceptedAt: string | null;
+	} | null;
+};
 
 export type CandidateApplicationListData = PaginatedData<CandidateApplication>;

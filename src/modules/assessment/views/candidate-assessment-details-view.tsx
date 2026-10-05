@@ -36,11 +36,15 @@ export function CandidateAssessmentDetailsView({ assessmentId }: { assessmentId:
 		return <PageSkeleton />;
 	}
 
-	if (assessmentQuery.isError) {
+	if (assessmentQuery.isError || applicationQuery.isError) {
+		const error = assessmentQuery.error ?? applicationQuery.error;
+
 		return (
 			<ErrorState
-				description={formatError(assessmentQuery.error)}
-				onRetry={() => void assessmentQuery.refetch()}
+				description={formatError(error)}
+				onRetry={() => {
+					void Promise.all([assessmentQuery.refetch(), applicationQuery.refetch()]);
+				}}
 			/>
 		);
 	}

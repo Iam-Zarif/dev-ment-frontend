@@ -1,5 +1,6 @@
 import {
 	ClipboardList,
+	FileText,
 	LayoutDashboard,
 	ListChecks,
 	type LucideIcon,
@@ -58,6 +59,11 @@ export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]>
 			label: "Assessments",
 			href: ROUTES.CANDIDATE_ASSESSMENTS,
 			icon: SearchCheck,
+		},
+		{
+			label: "My Applications",
+			href: ROUTES.CANDIDATE_APPLICATIONS,
+			icon: FileText,
 		},
 	],
 };
