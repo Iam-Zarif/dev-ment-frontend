@@ -10,6 +10,7 @@ import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { AssessmentPublishPanel } from "@/modules/assessment/components/assessment-publish-panel";
 import { AssessmentQuestionList } from "@/modules/assessment/components/assessment-question-list";
 import { QuestionPickerDialog } from "@/modules/assessment/components/question-picker-dialog";
 import { useAssessmentDetails } from "@/modules/assessment/hooks/use-assessment-details";
@@ -23,7 +24,14 @@ type Props = {
 export function AssessmentDetailsView({ assessmentId }: Props) {
 	const [pickerOpen, setPickerOpen] = useState(false);
 
-	const { query, attachMutation, removeMutation } = useAssessmentDetails(assessmentId);
+	const {
+		query,
+		attachMutation,
+		updateMarksMutation,
+		reorderMutation,
+		removeMutation,
+		publishMutation,
+	} = useAssessmentDetails(assessmentId);
 
 	if (query.isPending) {
 		return <PageSkeleton />;
@@ -43,6 +51,7 @@ export function AssessmentDetailsView({ assessmentId }: Props) {
 		try {
 			await attachMutation.mutateAsync({
 				questionId: question.id,
+
 				marks: Number(question.defaultMarks),
 			});
 
@@ -54,11 +63,46 @@ export function AssessmentDetailsView({ assessmentId }: Props) {
 		}
 	};
 
+	const handleUpdateMarks = async (assessmentQuestionId: string, marks: number) => {
+		try {
+			await updateMarksMutation.mutateAsync({
+				assessmentQuestionId,
+				marks,
+			});
+
+			toast.success("Marks updated");
+		} catch (error) {
+			toast.error(formatError(error));
+
+			throw error;
+		}
+	};
+
+	const handleReorder = async (assessmentQuestionIds: string[]) => {
+		try {
+			await reorderMutation.mutateAsync(assessmentQuestionIds);
+		} catch (error) {
+			toast.error(formatError(error));
+		}
+	};
+
 	const handleRemove = async (assessmentQuestionId: string) => {
 		try {
 			await removeMutation.mutateAsync(assessmentQuestionId);
 
 			toast.success("Question removed");
+		} catch (error) {
+			toast.error(formatError(error));
+
+			throw error;
+		}
+	};
+
+	const handlePublish = async () => {
+		try {
+			const result = await publishMutation.mutateAsync();
+
+			toast.success(`Assessment published. ${result.credit.remainingCredits} credits remaining.`);
 		} catch (error) {
 			toast.error(formatError(error));
 
@@ -122,9 +166,25 @@ export function AssessmentDetailsView({ assessmentId }: Props) {
 					items={assessment.assessmentQuestions}
 					editable={editable}
 					removing={removeMutation.isPending}
+					reordering={reorderMutation.isPending}
+					updatingQuestionId={
+						updateMarksMutation.isPending
+							? updateMarksMutation.variables?.assessmentQuestionId
+							: undefined
+					}
+					onUpdateMarks={handleUpdateMarks}
+					onReorder={handleReorder}
 					onRemove={handleRemove}
 				/>
 			</div>
+
+			{assessment.status === "DRAFT" && (
+				<AssessmentPublishPanel
+					readiness={assessment.publishReadiness}
+					publishing={publishMutation.isPending}
+					onPublish={handlePublish}
+				/>
+			)}
 
 			<QuestionPickerDialog
 				open={pickerOpen}

@@ -154,5 +154,26 @@ export type AttachAssessmentQuestionInput = {
 	questionId: string;
 	marks: number;
 };
+export type UpdateAssessmentQuestionInput = {
+	marks: number;
+};
+
+export type PublishAssessmentResult = {
+	assessment: {
+		id: string;
+		title: string;
+		status: "PUBLISHED";
+		creditGrantId: string;
+		creditConsumedAt: string;
+		publishedAt: string;
+	};
+
+	credit: {
+		grantId: string;
+		source: "FREE" | "PURCHASE" | "ADMIN";
+		remainingCredits: number;
+		expiresAt: string | null;
+	};
+};
 
 export type AssessmentListData = PaginatedData<RecruiterAssessment>;

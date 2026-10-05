@@ -1,31 +1,38 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ConfirmDialog } from "@/components/feedback/confirm-dialog";
 import { EmptyState } from "@/components/feedback/empty-state";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { AssessmentQuestionItem } from "@/types/assessment.types";
+import { AssessmentQuestionItem } from "@/modules/assessment/components/assessment-question-item";
+import type { AssessmentQuestionItem as AssessmentQuestion } from "@/types/assessment.types";
 
 type Props = {
-	items: AssessmentQuestionItem[];
-	editable: boolean;
+	items: AssessmentQuestion[];
 
+	editable: boolean;
 	removing: boolean;
+	reordering: boolean;
+
+	updatingQuestionId?: string;
+
+	onUpdateMarks: (assessmentQuestionId: string, marks: number) => Promise<void>;
+
+	onReorder: (assessmentQuestionIds: string[]) => Promise<void>;
 
 	onRemove: (assessmentQuestionId: string) => Promise<void>;
 };
 
-function preview(html: string) {
-	return html
-		.replace(/<[^>]*>/g, " ")
-		.replace(/\s+/g, " ")
-		.trim();
-}
-
-export function AssessmentQuestionList({ items, editable, removing, onRemove }: Props) {
-	const [selectedQuestion, setSelectedQuestion] = useState<AssessmentQuestionItem | null>(null);
+export function AssessmentQuestionList({
+	items,
+	editable,
+	removing,
+	reordering,
+	updatingQuestionId,
+	onUpdateMarks,
+	onReorder,
+	onRemove,
+}: Props) {
+	const [selectedQuestion, setSelectedQuestion] = useState<AssessmentQuestion | null>(null);
 
 	if (items.length === 0) {
 		return (
@@ -36,41 +43,37 @@ export function AssessmentQuestionList({ items, editable, removing, onRemove }: 
 		);
 	}
 
+	const moveQuestion = (index: number, offset: -1 | 1) => {
+		const target = index + offset;
+
+		if (target < 0 || target >= items.length) {
+			return;
+		}
+
+		const next = [...items];
+
+		[next[index], next[target]] = [next[target], next[index]];
+
+		void onReorder(next.map((item) => item.id));
+	};
+
 	return (
 		<>
 			<div className="space-y-3">
 				{items.map((item, index) => (
-					<div key={item.id} className="flex items-start gap-4 rounded-xl border bg-card p-4">
-						<div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium">
-							{index + 1}
-						</div>
-
-						<div className="min-w-0 flex-1">
-							<p className="font-medium">
-								{preview(item.question.contentHtml) || "Untitled question"}
-							</p>
-
-							<div className="mt-2 flex flex-wrap items-center gap-2">
-								<Badge variant="secondary">{item.question.type}</Badge>
-
-								<Badge variant="outline">{item.question.difficulty}</Badge>
-
-								<span className="text-xs text-muted-foreground">{item.marks} marks</span>
-							</div>
-						</div>
-
-						{editable && (
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon"
-								aria-label="Remove question"
-								onClick={() => setSelectedQuestion(item)}
-							>
-								<Trash2 className="size-4" />
-							</Button>
-						)}
-					</div>
+					<AssessmentQuestionItem
+						key={item.id}
+						item={item}
+						position={index}
+						total={items.length}
+						editable={editable}
+						savingMarks={updatingQuestionId === item.id}
+						reordering={reordering}
+						onSaveMarks={onUpdateMarks}
+						onMoveUp={() => moveQuestion(index, -1)}
+						onMoveDown={() => moveQuestion(index, 1)}
+						onRemove={() => setSelectedQuestion(item)}
+					/>
 				))}
 			</div>
 

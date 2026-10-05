@@ -9,6 +9,8 @@ import type {
 	AssessmentQuestionItem,
 	AttachAssessmentQuestionInput,
 	CreateAssessmentDraftInput,
+	PublishAssessmentResult,
+	UpdateAssessmentQuestionInput,
 } from "@/types/assessment.types";
 
 async function getAll(params: AssessmentListParams) {
@@ -48,6 +50,26 @@ async function addQuestion(assessmentId: string, input: AttachAssessmentQuestion
 	return response.data.data;
 }
 
+async function updateQuestion(
+	assessmentId: string,
+	assessmentQuestionId: string,
+	input: UpdateAssessmentQuestionInput,
+) {
+	await apiClient.patch<ApiResponse<unknown>>(
+		API_ENDPOINTS.assessments.questionById(assessmentId, assessmentQuestionId),
+		input,
+	);
+}
+
+async function reorderQuestions(assessmentId: string, assessmentQuestionIds: string[]) {
+	await apiClient.patch<ApiResponse<unknown>>(
+		API_ENDPOINTS.assessments.questionOrder(assessmentId),
+		{
+			assessmentQuestionIds,
+		},
+	);
+}
+
 async function removeQuestion(assessmentId: string, assessmentQuestionId: string) {
 	const response = await apiClient.delete<
 		ApiResponse<{
@@ -58,10 +80,21 @@ async function removeQuestion(assessmentId: string, assessmentQuestionId: string
 	return response.data.data;
 }
 
+async function publish(assessmentId: string) {
+	const response = await apiClient.post<ApiResponse<PublishAssessmentResult>>(
+		API_ENDPOINTS.assessments.publish(assessmentId),
+	);
+
+	return response.data.data;
+}
+
 export const assessmentService = {
 	getAll,
 	getById,
 	createDraft,
 	addQuestion,
+	updateQuestion,
+	reorderQuestions,
 	removeQuestion,
+	publish,
 };
