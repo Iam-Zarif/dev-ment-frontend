@@ -1,4 +1,10 @@
-import { ClipboardList, LayoutDashboard, ListChecks, type LucideIcon } from "lucide-react";
+import {
+	ClipboardList,
+	LayoutDashboard,
+	ListChecks,
+	type LucideIcon,
+	SearchCheck,
+} from "lucide-react";
 
 import { ROUTES, USER_ROLES } from "@/lib/constants";
 import type { UserRole } from "@/types/common.types";
@@ -47,6 +53,11 @@ export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]>
 			label: "Overview",
 			href: ROUTES.CANDIDATE,
 			icon: LayoutDashboard,
+		},
+		{
+			label: "Assessments",
+			href: ROUTES.CANDIDATE_ASSESSMENTS,
+			icon: SearchCheck,
 		},
 	],
 };

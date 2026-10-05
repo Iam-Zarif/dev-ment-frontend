@@ -17,6 +17,9 @@ export const API_ENDPOINTS = {
 	assessments: {
 		root: "/assessments",
 		draft: "/assessments/draft",
+		published: "/assessments/published",
+
+		publishedById: (id: string) => `/assessments/published/${id}`,
 
 		byId: (id: string) => `/assessments/${id}`,
 
@@ -39,7 +42,10 @@ export const API_ENDPOINTS = {
 
 	applications: {
 		root: "/applications",
-		byId: (id: string) => `/applications/${id}`,
+
+		mine: "/applications/me",
+
+		mineById: (id: string) => `/applications/me/${id}`,
 	},
 
 	invitations: {

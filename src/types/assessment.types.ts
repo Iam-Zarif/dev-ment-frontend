@@ -176,4 +176,50 @@ export type PublishAssessmentResult = {
 	};
 };
 
+export type PublishedAssessment = {
+	id: string;
+	title: string;
+	jobRole: string;
+
+	descriptionHtml: string | null;
+	skills: string[];
+
+	difficulty: DifficultyLevel;
+
+	durationMinutes: number;
+	passPercentage: number | string;
+
+	applicationDeadline: string | null;
+	opensAt: string | null;
+	closesAt: string | null;
+	publishedAt: string | null;
+
+	applicationOpen: boolean;
+
+	company: {
+		id: string;
+		name: string;
+		logoUrl: string | null;
+		websiteUrl: string | null;
+	};
+
+	_count: {
+		assessmentQuestions: number;
+	};
+};
+
+export type PublishedAssessmentDetails = PublishedAssessment & {
+	instructionsHtml: string | null;
+};
+
+export type PublishedAssessmentListParams = {
+	page: number;
+	limit: number;
+
+	search?: string;
+	difficulty?: DifficultyLevel;
+};
+
+export type PublishedAssessmentListData = PaginatedData<PublishedAssessment>;
+
 export type AssessmentListData = PaginatedData<RecruiterAssessment>;

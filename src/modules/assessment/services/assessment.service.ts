@@ -10,6 +10,9 @@ import type {
 	AttachAssessmentQuestionInput,
 	CreateAssessmentDraftInput,
 	PublishAssessmentResult,
+	PublishedAssessmentDetails,
+	PublishedAssessmentListData,
+	PublishedAssessmentListParams,
 	UpdateAssessmentQuestionInput,
 } from "@/types/assessment.types";
 
@@ -88,6 +91,24 @@ async function publish(assessmentId: string) {
 	return response.data.data;
 }
 
+async function getPublished(params: PublishedAssessmentListParams) {
+	const response = await apiClient.get<ApiResponse<PublishedAssessmentListData>>(
+		API_ENDPOINTS.assessments.published,
+		{
+			params,
+		},
+	);
+
+	return response.data.data;
+}
+
+async function getPublishedById(id: string) {
+	const response = await apiClient.get<ApiResponse<PublishedAssessmentDetails>>(
+		API_ENDPOINTS.assessments.publishedById(id),
+	);
+
+	return response.data.data;
+}
 export const assessmentService = {
 	getAll,
 	getById,
@@ -97,4 +118,6 @@ export const assessmentService = {
 	reorderQuestions,
 	removeQuestion,
 	publish,
+	getPublished,
+	getPublishedById,
 };
