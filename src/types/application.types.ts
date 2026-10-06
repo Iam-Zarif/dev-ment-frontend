@@ -119,4 +119,79 @@ export type CandidateApplicationDetails = {
 	} | null;
 };
 
+export type RecruiterApplication = {
+	id: string;
+	status: ApplicationStatus;
+
+	coverNote: string | null;
+	rejectionReason: string | null;
+	reviewedAt: string | null;
+	appliedAt: string;
+
+	candidate: {
+		id: string;
+		headline: string | null;
+		experienceYears: number | null;
+		skills: string[];
+		resumeUrl: string | null;
+
+		user: {
+			id: string;
+			legalName: string;
+			email: string;
+			imageUrl: string | null;
+		};
+	};
+
+	assessment: {
+		id: string;
+		title: string;
+		jobRole: string;
+		status: string;
+	};
+};
+
+export type RecruiterApplicationDetails = RecruiterApplication & {
+	updatedAt: string;
+
+	candidate: RecruiterApplication["candidate"] & {
+		phone: string | null;
+		bio: string | null;
+
+		githubUrl: string | null;
+		linkedinUrl: string | null;
+		portfolioUrl: string | null;
+	};
+
+	invitation: {
+		id: string;
+		status: string;
+		expiresAt: string;
+		sentAt: string | null;
+		acceptedAt: string | null;
+	} | null;
+};
+
+export type RecruiterApplicationListParams = {
+	page: number;
+	limit: number;
+
+	search?: string;
+	status?: ApplicationStatus;
+	assessmentId?: string;
+};
+
+export type RecruiterApplicationListData = PaginatedData<RecruiterApplication>;
+
+export type ApplicationDecisionResult = {
+	id: string;
+	status: ApplicationStatus;
+	reviewedAt: string | null;
+	rejectionReason: string | null;
+};
+
+export type RejectApplicationInput = {
+	rejectionReason?: string;
+};
+
 export type CandidateApplicationListData = PaginatedData<CandidateApplication>;

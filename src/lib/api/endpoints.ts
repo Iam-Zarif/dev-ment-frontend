@@ -46,6 +46,14 @@ export const API_ENDPOINTS = {
 		mine: "/applications/me",
 
 		mineById: (id: string) => `/applications/me/${id}`,
+
+		recruiter: "/applications/recruiter",
+
+		recruiterById: (id: string) => `/applications/recruiter/${id}`,
+
+		shortlist: (id: string) => `/applications/${id}/shortlist`,
+
+		reject: (id: string) => `/applications/${id}/reject`,
 	},
 
 	invitations: {

@@ -5,6 +5,7 @@ import {
 	ListChecks,
 	type LucideIcon,
 	SearchCheck,
+	UsersRound,
 } from "lucide-react";
 
 import { ROUTES, USER_ROLES } from "@/lib/constants";
@@ -46,6 +47,11 @@ export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]>
 			label: "Question Bank",
 			href: ROUTES.RECRUITER_QUESTIONS,
 			icon: ListChecks,
+		},
+		{
+			label: "Applications",
+			href: ROUTES.RECRUITER_APPLICATIONS,
+			icon: UsersRound,
 		},
 	],
 

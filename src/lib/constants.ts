@@ -23,6 +23,9 @@ export const ROUTES = {
 	RECRUITER_QUESTIONS: "/recruiter/questions",
 	RECRUITER_QUESTIONS_NEW: "/recruiter/questions/new",
 	RECRUITER_ASSESSMENTS: "/recruiter/assessments",
+	RECRUITER_APPLICATIONS: "/recruiter/applications",
+
+	RECRUITER_APPLICATION: (id: string) => `/recruiter/applications/${id}`,
 
 	FORGOT_PASSWORD: "/forgot-password",
 	RESET_PASSWORD: "/reset-password",
@@ -41,6 +44,7 @@ export const QUERY_KEYS = {
 	ASSESSMENTS: ["assessments"] as const,
 	QUESTIONS: ["questions"] as const,
 	APPLICATIONS: ["applications"] as const,
+	INVITATIONS: ["invitations"] as const,
 	ATTEMPTS: ["attempts"] as const,
 	EVALUATIONS: ["evaluations"] as const,
 	PAYMENTS: ["payments"] as const,
