@@ -12,6 +12,7 @@ export const ROUTES = {
 	ADMIN: "/admin",
 	RECRUITER: "/recruiter",
 	CANDIDATE: "/candidate",
+	INVITATIONS: "/invitations",
 	CANDIDATE_ASSESSMENTS: "/candidate/assessments",
 	CANDIDATE_APPLICATIONS: "/candidate/applications",
 

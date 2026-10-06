@@ -58,6 +58,12 @@ export const API_ENDPOINTS = {
 
 	invitations: {
 		root: "/invitations",
+		verify: "/invitations/verify",
+		accept: "/invitations/accept",
+
+		resend: (id: string) => `/invitations/${id}/resend`,
+
+		revoke: (id: string) => `/invitations/${id}/revoke`,
 	},
 
 	attempts: {

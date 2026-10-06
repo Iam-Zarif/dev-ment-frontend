@@ -16,6 +16,40 @@ import { ROUTES } from "@/lib/constants";
 import { type LoginFormValues, loginSchema } from "@/modules/auth/schemas/auth.schema";
 import { formatError } from "@/utils/format-error";
 
+function getSafeNextPath(
+	nextPath: string | null,
+	roleHome: string,
+) {
+	if (
+		!nextPath?.startsWith("/") ||
+		nextPath.startsWith("//")
+	) {
+		return roleHome;
+	}
+
+	const isRoleRoute =
+		nextPath === roleHome ||
+		nextPath.startsWith(
+			`${roleHome}/`,
+		);
+
+	const isCandidateInvitation =
+		roleHome === ROUTES.CANDIDATE &&
+		(nextPath === ROUTES.INVITATIONS ||
+			nextPath.startsWith(
+				`${ROUTES.INVITATIONS}?`,
+			));
+
+	if (
+		!isRoleRoute &&
+		!isCandidateInvitation
+	) {
+		return roleHome;
+	}
+
+	return nextPath;
+}
+
 export function LoginForm() {
 	const router = useRouter();
 	const { login } = useAuth();
@@ -41,8 +75,12 @@ export function LoginForm() {
 
 			toast.success(response.message || "Login successful");
 
-			router.replace(response.redirectTo);
+			const nextPath = getSafeNextPath(
+				new URLSearchParams(window.location.search).get("next"),
+				response.redirectTo,
+			);
 
+			router.replace(nextPath);
 			router.refresh();
 		} catch (error) {
 			toast.error(formatError(error));
