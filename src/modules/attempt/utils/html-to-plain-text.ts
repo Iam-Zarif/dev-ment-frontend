@@ -1,4 +1,8 @@
-export function htmlToPlainText(html: string) {
+export function htmlToPlainText(html?: string | null) {
+	if (!html) {
+		return "";
+	}
+
 	return html
 		.replace(/<br\s*\/?>/gi, "\n")
 		.replace(/<li[^>]*>/gi, "• ")

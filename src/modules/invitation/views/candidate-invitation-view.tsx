@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { QUERY_KEYS, ROUTES } from "@/lib/constants";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
 import { attemptService } from "@/modules/attempt/services/attempt.service";
+import { htmlToPlainText } from "@/modules/attempt/utils/html-to-plain-text";
 import { invitationService } from "@/modules/invitation/services/invitation.service";
 import { formatDateTime } from "@/utils/format-date";
 import { formatError } from "@/utils/format-error";
@@ -20,17 +21,6 @@ import { formatError } from "@/utils/format-error";
 type Props = {
 	token: string;
 };
-
-function plainText(html: string | null) {
-	if (!html) {
-		return "";
-	}
-
-	return html
-		.replace(/<[^>]*>/g, " ")
-		.replace(/\s+/g, " ")
-		.trim();
-}
 
 export function CandidateInvitationView({ token }: Props) {
 	const router = useRouter();
@@ -62,7 +52,7 @@ export function CandidateInvitationView({ token }: Props) {
 		},
 	});
 	const startMutation = useMutation({
-		mutationFn: () => attemptService.start(invitation.id),
+		mutationFn: (invitationId: string) => attemptService.start(invitationId),
 
 		onSuccess: (session) => {
 			router.replace(ROUTES.CANDIDATE_ATTEMPT(session.attempt.id));
@@ -151,7 +141,7 @@ export function CandidateInvitationView({ token }: Props) {
 							<h3 className="font-medium">About the assessment</h3>
 
 							<p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
-								{plainText(assessment.descriptionHtml)}
+								{htmlToPlainText(assessment.descriptionHtml)}
 							</p>
 						</div>
 					)}
@@ -161,7 +151,7 @@ export function CandidateInvitationView({ token }: Props) {
 							<h3 className="font-medium">Instructions</h3>
 
 							<p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
-								{plainText(assessment.instructionsHtml)}
+								{htmlToPlainText(assessment.instructionsHtml)}
 							</p>
 						</div>
 					)}
@@ -188,7 +178,7 @@ export function CandidateInvitationView({ token }: Props) {
 								disabled={startMutation.isPending}
 								onClick={async () => {
 									try {
-										await startMutation.mutateAsync();
+										await startMutation.mutateAsync(invitation.id);
 									} catch (error) {
 										toast.error(formatError(error));
 									}

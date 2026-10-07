@@ -1,9 +1,13 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
+
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AnswerSavedState } from "@/modules/attempt/components/answer-saved-state";
 import type { AttemptAnswerFieldProps, AttemptTextQuestion } from "@/types/attempt.types";
+
+const AUTOSAVE_DELAY = 700;
 
 export function TextAnswerField({
 	question,
@@ -15,37 +19,68 @@ export function TextAnswerField({
 
 	const [value, setValue] = useState(initialValue);
 
+	const [dirty, setDirty] = useState(false);
+
+	const valueRef = useRef(initialValue);
+
 	const lastSavedValue = useRef(initialValue);
 
 	const timerRef = useRef<number | null>(null);
 
-	useEffect(() => {
-		return () => {
-			if (timerRef.current !== null) {
-				window.clearTimeout(timerRef.current);
-			}
-		};
-	}, []);
+	const mountedRef = useRef(true);
 
-	const persist = async (nextValue: string) => {
+	const onSaveRef = useRef(onSave);
+
+	useEffect(() => {
+		onSaveRef.current = onSave;
+	}, [onSave]);
+
+	const saveSnapshot = async (nextValue: string) => {
 		if (nextValue === lastSavedValue.current) {
+			if (mountedRef.current) {
+				setDirty(valueRef.current !== nextValue);
+			}
+
 			return;
 		}
 
-		const previous = lastSavedValue.current;
-
-		lastSavedValue.current = nextValue;
-
 		try {
-			await onSave({
+			await onSaveRef.current({
 				answerText: nextValue,
 			});
+
+			lastSavedValue.current = nextValue;
+
+			if (mountedRef.current) {
+				setDirty(valueRef.current !== nextValue);
+			}
 		} catch (error) {
-			lastSavedValue.current = previous;
+			if (mountedRef.current) {
+				setDirty(true);
+			}
 
 			throw error;
 		}
 	};
+
+	const queueRef = useRef<Promise<void>>(Promise.resolve());
+	const persist = (nextValue: string) => {
+		const request = queueRef.current.then(() => saveSnapshot(nextValue));
+		queueRef.current = request.catch(() => undefined);
+		return request;
+	};
+	const persistRef = useRef(persist);
+	useEffect(() => {
+		persistRef.current = persist;
+	});
+	useEffect(() => {
+		mountedRef.current = true;
+		return () => {
+			mountedRef.current = false;
+			if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+			void persistRef.current(valueRef.current).catch(() => undefined);
+		};
+	}, []);
 
 	const scheduleSave = (nextValue: string) => {
 		if (timerRef.current !== null) {
@@ -56,7 +91,7 @@ export function TextAnswerField({
 			timerRef.current = null;
 
 			void persist(nextValue).catch(() => undefined);
-		}, 700);
+		}, AUTOSAVE_DELAY);
 	};
 
 	const flushSave = () => {
@@ -66,7 +101,7 @@ export function TextAnswerField({
 			timerRef.current = null;
 		}
 
-		void persist(value).catch(() => undefined);
+		void persist(valueRef.current).catch(() => undefined);
 	};
 
 	return (
@@ -82,13 +117,18 @@ export function TextAnswerField({
 				onChange={(event) => {
 					const nextValue = event.target.value;
 
+					valueRef.current = nextValue;
+
 					setValue(nextValue);
+
+					setDirty(nextValue !== lastSavedValue.current);
+
 					scheduleSave(nextValue);
 				}}
 				onBlur={flushSave}
 			/>
 
-			<AnswerSavedState saving={saving} answer={answer} />
+			<AnswerSavedState saving={saving} dirty={dirty} answer={answer} />
 		</div>
 	);
 }

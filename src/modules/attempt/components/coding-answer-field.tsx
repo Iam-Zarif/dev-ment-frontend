@@ -1,5 +1,7 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
+
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -12,6 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { AnswerSavedState } from "@/modules/attempt/components/answer-saved-state";
 import type { AttemptAnswerFieldProps, AttemptCodingQuestion } from "@/types/attempt.types";
 
+const AUTOSAVE_DELAY = 700;
+
 function getStarterCode(starterCode: unknown, language: string) {
 	if (typeof starterCode !== "object" || starterCode === null || Array.isArray(starterCode)) {
 		return "";
@@ -22,6 +26,13 @@ function getStarterCode(starterCode: unknown, language: string) {
 	const value = record[language];
 
 	return typeof value === "string" ? value : "";
+}
+
+function createSnapshot(code: string, language: string) {
+	return JSON.stringify({
+		code,
+		language,
+	});
 }
 
 export function CodingAnswerField({
@@ -38,53 +49,81 @@ export function CodingAnswerField({
 
 	const [code, setCode] = useState(initialCode);
 
-	const initialSnapshot = JSON.stringify({
-		language: initialLanguage,
+	const [dirty, setDirty] = useState(false);
+
+	const latestRef = useRef({
 		code: initialCode,
+		language: initialLanguage,
 	});
 
-	const lastSavedSnapshot = useRef(initialSnapshot);
+	const lastSavedSnapshot = useRef(createSnapshot(initialCode, initialLanguage));
 
 	const timerRef = useRef<number | null>(null);
 
-	useEffect(() => {
-		return () => {
-			if (timerRef.current !== null) {
-				window.clearTimeout(timerRef.current);
-			}
-		};
-	}, []);
+	const mountedRef = useRef(true);
 
-	const persist = async (nextCode: string, nextLanguage: string) => {
+	const onSaveRef = useRef(onSave);
+
+	useEffect(() => {
+		onSaveRef.current = onSave;
+	}, [onSave]);
+
+	const saveSnapshot = async (nextCode: string, nextLanguage: string) => {
 		if (!nextLanguage) {
 			return;
 		}
 
-		const snapshot = JSON.stringify({
-			language: nextLanguage,
-			code: nextCode,
-		});
+		const snapshot = createSnapshot(nextCode, nextLanguage);
 
 		if (snapshot === lastSavedSnapshot.current) {
+			if (mountedRef.current) {
+				setDirty(createSnapshot(latestRef.current.code, latestRef.current.language) !== snapshot);
+			}
+
 			return;
 		}
 
-		const previous = lastSavedSnapshot.current;
-
-		lastSavedSnapshot.current = snapshot;
-
 		try {
-			await onSave({
+			await onSaveRef.current({
 				codeAnswer: nextCode,
-
 				language: nextLanguage,
 			});
+
+			lastSavedSnapshot.current = snapshot;
+
+			if (mountedRef.current) {
+				const latest = latestRef.current;
+
+				setDirty(createSnapshot(latest.code, latest.language) !== snapshot);
+			}
 		} catch (error) {
-			lastSavedSnapshot.current = previous;
+			if (mountedRef.current) {
+				setDirty(true);
+			}
 
 			throw error;
 		}
 	};
+
+	const queueRef = useRef<Promise<void>>(Promise.resolve());
+	const persist = (nextCode: string, nextLanguage: string) => {
+		const request = queueRef.current.then(() => saveSnapshot(nextCode, nextLanguage));
+		queueRef.current = request.catch(() => undefined);
+		return request;
+	};
+	const persistRef = useRef(persist);
+	useEffect(() => {
+		persistRef.current = persist;
+	});
+	useEffect(() => {
+		mountedRef.current = true;
+		return () => {
+			mountedRef.current = false;
+			if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+			const latest = latestRef.current;
+			void persistRef.current(latest.code, latest.language).catch(() => undefined);
+		};
+	}, []);
 
 	const scheduleSave = (nextCode: string, nextLanguage: string) => {
 		if (timerRef.current !== null) {
@@ -95,7 +134,7 @@ export function CodingAnswerField({
 			timerRef.current = null;
 
 			void persist(nextCode, nextLanguage).catch(() => undefined);
-		}, 700);
+		}, AUTOSAVE_DELAY);
 	};
 
 	const flushSave = () => {
@@ -105,7 +144,13 @@ export function CodingAnswerField({
 			timerRef.current = null;
 		}
 
-		void persist(code, language).catch(() => undefined);
+		const latest = latestRef.current;
+
+		void persist(latest.code, latest.language).catch(() => undefined);
+	};
+
+	const updateDirty = (nextCode: string, nextLanguage: string) => {
+		setDirty(createSnapshot(nextCode, nextLanguage) !== lastSavedSnapshot.current);
 	};
 
 	return (
@@ -117,6 +162,13 @@ export function CodingAnswerField({
 					value={language}
 					onValueChange={(value) => {
 						setLanguage(value);
+
+						latestRef.current = {
+							code,
+							language: value,
+						};
+
+						updateDirty(code, value);
 
 						scheduleSave(code, value);
 					}}
@@ -150,13 +202,20 @@ export function CodingAnswerField({
 
 						setCode(nextCode);
 
+						latestRef.current = {
+							code: nextCode,
+							language,
+						};
+
+						updateDirty(nextCode, language);
+
 						scheduleSave(nextCode, language);
 					}}
 					onBlur={flushSave}
 				/>
 			</div>
 
-			<AnswerSavedState saving={saving} answer={answer} />
+			<AnswerSavedState saving={saving} dirty={dirty} answer={answer} />
 		</div>
 	);
 }
