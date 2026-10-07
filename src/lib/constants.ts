@@ -15,6 +15,7 @@ export const ROUTES = {
 	INVITATIONS: "/invitations",
 	CANDIDATE_ASSESSMENTS: "/candidate/assessments",
 	CANDIDATE_APPLICATIONS: "/candidate/applications",
+	CANDIDATE_ATTEMPT: (id: string) => `/candidate/attempts/${id}`,
 
 	CANDIDATE_APPLICATION: (id: string) => `/candidate/applications/${id}`,
 

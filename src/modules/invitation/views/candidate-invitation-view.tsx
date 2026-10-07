@@ -2,16 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Clock3 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
 import { PageHeader } from "@/components/data-display/page-header";
 import { ErrorState } from "@/components/feedback/error-state";
 import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { QUERY_KEYS } from "@/lib/constants";
+import { QUERY_KEYS, ROUTES } from "@/lib/constants";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
+import { attemptService } from "@/modules/attempt/services/attempt.service";
 import { invitationService } from "@/modules/invitation/services/invitation.service";
 import { formatDateTime } from "@/utils/format-date";
 import { formatError } from "@/utils/format-error";
@@ -32,6 +33,7 @@ function plainText(html: string | null) {
 }
 
 export function CandidateInvitationView({ token }: Props) {
+	const router = useRouter();
 	const queryClient = useQueryClient();
 
 	const queryKey = [...QUERY_KEYS.INVITATIONS, "candidate", token] as const;
@@ -57,6 +59,15 @@ export function CandidateInvitationView({ token }: Props) {
 					queryKey: QUERY_KEYS.APPLICATIONS,
 				}),
 			]);
+		},
+	});
+	const startMutation = useMutation({
+		mutationFn: () => attemptService.start(invitation.id),
+
+		onSuccess: (session) => {
+			router.replace(ROUTES.CANDIDATE_ATTEMPT(session.attempt.id));
+
+			router.refresh();
 		},
 	});
 
@@ -162,10 +173,29 @@ export function CandidateInvitationView({ token }: Props) {
 					</div>
 
 					{isAccepted ? (
-						<div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm">
-							<CheckCircle2 className="size-5 text-primary" />
+						<div className="space-y-3">
+							<div className="flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm">
+								<CheckCircle2 className="size-5 text-primary" />
 
-							<span>Invitation accepted. You can start the assessment when ready.</span>
+								<span>
+									Invitation accepted. The assessment timer starts when you click Start assessment.
+								</span>
+							</div>
+
+							<Button
+								type="button"
+								size="lg"
+								disabled={startMutation.isPending}
+								onClick={async () => {
+									try {
+										await startMutation.mutateAsync();
+									} catch (error) {
+										toast.error(formatError(error));
+									}
+								}}
+							>
+								Start assessment
+							</Button>
 						</div>
 					) : (
 						<Button

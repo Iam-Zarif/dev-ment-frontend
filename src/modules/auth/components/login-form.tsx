@@ -16,34 +16,18 @@ import { ROUTES } from "@/lib/constants";
 import { type LoginFormValues, loginSchema } from "@/modules/auth/schemas/auth.schema";
 import { formatError } from "@/utils/format-error";
 
-function getSafeNextPath(
-	nextPath: string | null,
-	roleHome: string,
-) {
-	if (
-		!nextPath?.startsWith("/") ||
-		nextPath.startsWith("//")
-	) {
+function getSafeNextPath(nextPath: string | null, roleHome: string) {
+	if (!nextPath?.startsWith("/") || nextPath.startsWith("//")) {
 		return roleHome;
 	}
 
-	const isRoleRoute =
-		nextPath === roleHome ||
-		nextPath.startsWith(
-			`${roleHome}/`,
-		);
+	const isRoleRoute = nextPath === roleHome || nextPath.startsWith(`${roleHome}/`);
 
 	const isCandidateInvitation =
 		roleHome === ROUTES.CANDIDATE &&
-		(nextPath === ROUTES.INVITATIONS ||
-			nextPath.startsWith(
-				`${ROUTES.INVITATIONS}?`,
-			));
+		(nextPath === ROUTES.INVITATIONS || nextPath.startsWith(`${ROUTES.INVITATIONS}?`));
 
-	if (
-		!isRoleRoute &&
-		!isCandidateInvitation
-	) {
+	if (!isRoleRoute && !isCandidateInvitation) {
 		return roleHome;
 	}
 

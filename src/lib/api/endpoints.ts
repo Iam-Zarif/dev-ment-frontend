@@ -67,8 +67,16 @@ export const API_ENDPOINTS = {
 	},
 
 	attempts: {
-		root: "/attempts",
+		start: "/attempts/start",
+
 		byId: (id: string) => `/attempts/${id}`,
+
+		answer: (id: string, assessmentQuestionId: string) =>
+			`/attempts/${id}/answers/${assessmentQuestionId}`,
+
+		proctorEvents: (id: string) => `/attempts/${id}/proctor-events`,
+
+		submit: (id: string) => `/attempts/${id}/submit`,
 	},
 
 	evaluations: {
