@@ -5,6 +5,8 @@ import type {
 	AttemptAnswer,
 	AttemptAnswerInput,
 	AttemptSession,
+	ProctorEventInput,
+	ProctorEventResult,
 	SubmitAttemptResult,
 } from "@/types/attempt.types";
 
@@ -37,6 +39,15 @@ async function saveAnswer(
 	return response.data.data;
 }
 
+async function recordProctorEvent(attemptId: string, input: ProctorEventInput) {
+	const response = await apiClient.post<ApiResponse<ProctorEventResult>>(
+		API_ENDPOINTS.attempts.proctorEvents(attemptId),
+		input,
+	);
+
+	return response.data.data;
+}
+
 async function submit(attemptId: string) {
 	const response = await apiClient.post<ApiResponse<SubmitAttemptResult>>(
 		API_ENDPOINTS.attempts.submit(attemptId),
@@ -49,5 +60,6 @@ export const attemptService = {
 	start,
 	getById,
 	saveAnswer,
+	recordProctorEvent,
 	submit,
 };

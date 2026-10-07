@@ -4,8 +4,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { AnswerSavedState } from "@/modules/attempt/components/answer-saved-state";
-import { htmlToPlainText } from "@/modules/attempt/utils/html-to-plain-text";
 import type { AttemptAnswerFieldProps, AttemptMcqQuestion } from "@/types/attempt.types";
+import { htmlToPlainText } from "@/utils/html-to-plain-text";
 
 export function McqAnswerField({
 	question,

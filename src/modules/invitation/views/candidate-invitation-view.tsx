@@ -13,10 +13,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { QUERY_KEYS, ROUTES } from "@/lib/constants";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
 import { attemptService } from "@/modules/attempt/services/attempt.service";
-import { htmlToPlainText } from "@/modules/attempt/utils/html-to-plain-text";
 import { invitationService } from "@/modules/invitation/services/invitation.service";
 import { formatDateTime } from "@/utils/format-date";
 import { formatError } from "@/utils/format-error";
+import { htmlToPlainText } from "@/utils/html-to-plain-text";
 
 type Props = {
 	token: string;

@@ -136,3 +136,25 @@ export type AttemptAnswerFieldProps<Question extends AttemptQuestion = AttemptQu
 
 	onSave: (input: AttemptAnswerInput) => Promise<void>;
 };
+
+export type ProctorEventType = "TAB_HIDDEN" | "WINDOW_BLUR" | "FULLSCREEN_EXIT";
+
+export type ProctorEventInput = {
+	clientEventId: string;
+	eventType: ProctorEventType;
+	occurredAt: string;
+};
+
+export type ProctorEventResult = {
+	event: {
+		id: string;
+		clientEventId: string;
+		eventType: ProctorEventType;
+		occurredAt: string;
+		createdAt: string;
+	};
+
+	totalProctorEvents: number;
+	tabSwitchCount: number;
+	isSuspicious: boolean;
+};

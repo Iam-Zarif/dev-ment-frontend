@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { QUERY_KEYS, USER_ROLES } from "@/lib/constants";
 import { attemptService } from "@/modules/attempt/services/attempt.service";
-import type { AttemptAnswerInput, AttemptSession } from "@/types/attempt.types";
+import type { AttemptAnswerInput, AttemptSession, ProctorEventInput } from "@/types/attempt.types";
 
 type SaveAnswerVariables = {
 	assessmentQuestionId: string;
@@ -86,7 +86,32 @@ export function useAttemptSession(attemptId: string) {
 		},
 	});
 
+	const proctorEventMutation = useMutation({
+		mutationFn: (input: ProctorEventInput) => attemptService.recordProctorEvent(attemptId, input),
+
+		onSuccess: (result) => {
+			queryClient.setQueryData<AttemptSession>(detailKey, (current) => {
+				if (!current) {
+					return current;
+				}
+
+				return {
+					...current,
+
+					attempt: {
+						...current.attempt,
+
+						tabSwitchCount: result.tabSwitchCount,
+
+						isSuspicious: result.isSuspicious,
+					},
+				};
+			});
+		},
+	});
+
 	return {
+		proctorEventMutation,
 		query,
 		saveAnswerMutation,
 		submitMutation,

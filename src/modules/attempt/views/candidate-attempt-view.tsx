@@ -14,7 +14,8 @@ import { useAttemptSession } from "@/modules/attempt/hooks/use-attempt-session";
 import type { AttemptAnswerInput } from "@/types/attempt.types";
 import { formatError } from "@/utils/format-error";
 export function CandidateAttemptView({ attemptId }: { attemptId: string }) {
-	const { query, saveAnswerMutation, submitMutation } = useAttemptSession(attemptId);
+	const { query, saveAnswerMutation, submitMutation, proctorEventMutation } =
+		useAttemptSession(attemptId);
 
 	if (query.isPending) {
 		return <PageSkeleton />;
@@ -43,9 +44,15 @@ export function CandidateAttemptView({ attemptId }: { attemptId: string }) {
 							</p>
 						</div>
 
-						<Button asChild variant="outline">
-							<Link href={ROUTES.CANDIDATE_APPLICATIONS}>My applications</Link>
-						</Button>
+						<div className="flex flex-wrap justify-center gap-2">
+							<Button asChild>
+								<Link href={ROUTES.CANDIDATE_RESULT(attemptId)}>Check result</Link>
+							</Button>
+
+							<Button asChild variant="outline">
+								<Link href={ROUTES.CANDIDATE_APPLICATIONS}>My applications</Link>
+							</Button>
+						</div>
 					</CardContent>
 				</Card>
 			</div>
@@ -92,6 +99,7 @@ export function CandidateAttemptView({ attemptId }: { attemptId: string }) {
 			submitting={submitMutation.isPending}
 			saveAnswer={saveAnswer}
 			onSubmit={submit}
+			recordProctorEvent={(input) => proctorEventMutation.mutateAsync(input)}
 		/>
 	);
 }

@@ -11,10 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AttemptAnswerFields } from "@/modules/attempt/components/attempt-answer-fields";
+import { AttemptIntegrityControls } from "@/modules/attempt/components/attempt-integrity-controls";
 import { formatAttemptTime, useAttemptTimer } from "@/modules/attempt/hooks/use-attempt-timer";
 import { findAnswer, hasAnswer } from "@/modules/attempt/utils/attempt-answers";
-import { htmlToPlainText } from "@/modules/attempt/utils/html-to-plain-text";
-import type { AttemptAnswerInput, AttemptSession } from "@/types/attempt.types";
+import type { AttemptAnswerInput, AttemptSession, ProctorEventInput } from "@/types/attempt.types";
+import { htmlToPlainText } from "@/utils/html-to-plain-text";
 
 type RunnerProps = {
 	session: AttemptSession;
@@ -26,6 +27,7 @@ type RunnerProps = {
 	submitting: boolean;
 
 	onSubmit: () => Promise<void>;
+	recordProctorEvent: (input: ProctorEventInput) => Promise<unknown>;
 };
 
 export function AttemptRunner({
@@ -34,6 +36,7 @@ export function AttemptRunner({
 	savingQuestionId,
 	submitting,
 	onSubmit,
+	recordProctorEvent,
 }: RunnerProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -83,6 +86,10 @@ export function AttemptRunner({
 				}
 			/>
 
+			<AttemptIntegrityControls
+				active={session.attempt.status === "IN_PROGRESS" && !submitting}
+				onRecord={recordProctorEvent}
+			/>
 			<div className="grid gap-6 lg:grid-cols-[1fr_220px]">
 				<div className="space-y-4">
 					<Card>
