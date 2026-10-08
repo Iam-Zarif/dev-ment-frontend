@@ -81,18 +81,49 @@ export const API_ENDPOINTS = {
 
 	evaluations: {
 		root: "/evaluations",
+
 		byId: (id: string) => `/evaluations/${id}`,
+
+		question: (id: string, assessmentQuestionId: string) =>
+			`/evaluations/${id}/questions/${assessmentQuestionId}`,
+
+		evaluate: (id: string) => `/evaluations/${id}/evaluate`,
+
+		finalize: (id: string) => `/evaluations/${id}/finalize`,
+
+		release: (id: string) => `/evaluations/${id}/release`,
+
+		candidateResult: (id: string) => `/evaluations/results/me/${id}`,
 	},
 
 	payments: {
 		root: "/payments",
+
+		plans: "/payments/plans",
+		checkout: "/payments/checkout",
+		credits: "/payments/credits",
+
+		byId: (id: string) => `/payments/${id}`,
 	},
 
 	profiles: {
-		root: "/profiles",
+		candidate: "/profiles/candidate",
+
+		recruiter: "/profiles/recruiter",
+
+		uploadSignature: "/profiles/upload-signature",
 	},
 
 	admin: {
-		root: "/admin",
+		dashboard: "/admin/dashboard",
+		users: "/admin/users",
+
+		userStatus: (id: string) => `/admin/users/${id}/status`,
+
+		user: (id: string) => `/admin/users/${id}`,
+
+		auditLogs: "/admin/audit-logs",
+
+		payments: "/admin/payments",
 	},
 } as const;

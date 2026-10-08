@@ -1,10 +1,15 @@
 import {
+	BarChart3,
 	ClipboardList,
+	CreditCard,
 	FileText,
 	LayoutDashboard,
 	ListChecks,
 	type LucideIcon,
 	SearchCheck,
+	Settings,
+	ShieldCheck,
+	Users,
 	UsersRound,
 } from "lucide-react";
 
@@ -19,7 +24,9 @@ export type DashboardNavItem = {
 
 export const ROLE_LABELS: Record<UserRole, string> = {
 	[USER_ROLES.ADMIN]: "Admin",
+
 	[USER_ROLES.RECRUITER]: "Recruiter",
+
 	[USER_ROLES.CANDIDATE]: "Candidate",
 };
 
@@ -29,6 +36,16 @@ export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]>
 			label: "Overview",
 			href: ROUTES.ADMIN,
 			icon: LayoutDashboard,
+		},
+		{
+			label: "Users",
+			href: ROUTES.ADMIN_USERS,
+			icon: Users,
+		},
+		{
+			label: "Reports",
+			href: ROUTES.ADMIN_REPORTS,
+			icon: BarChart3,
 		},
 	],
 
@@ -53,6 +70,21 @@ export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]>
 			href: ROUTES.RECRUITER_APPLICATIONS,
 			icon: UsersRound,
 		},
+		{
+			label: "Evaluations",
+			href: ROUTES.RECRUITER_EVALUATIONS,
+			icon: ShieldCheck,
+		},
+		{
+			label: "Billing",
+			href: ROUTES.RECRUITER_BILLING,
+			icon: CreditCard,
+		},
+		{
+			label: "Profile",
+			href: ROUTES.RECRUITER_PROFILE,
+			icon: Settings,
+		},
 	],
 
 	[USER_ROLES.CANDIDATE]: [
@@ -70,6 +102,11 @@ export const DASHBOARD_NAVIGATION: Record<UserRole, readonly DashboardNavItem[]>
 			label: "My Applications",
 			href: ROUTES.CANDIDATE_APPLICATIONS,
 			icon: FileText,
+		},
+		{
+			label: "Profile",
+			href: ROUTES.CANDIDATE_PROFILE,
+			icon: Settings,
 		},
 	],
 };

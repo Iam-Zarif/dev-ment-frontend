@@ -1,5 +1,5 @@
-import { PageHeader } from "@/components/data-display/page-header";
+import { AdminDashboardView } from "@/modules/admin/views/admin-dashboard-view";
 
 export default function AdminPage() {
-	return <PageHeader title="Admin overview" />;
+	return <AdminDashboardView />;
 }
