@@ -74,7 +74,6 @@ export function OtpVerificationForm({
 				await authService.verifyPasswordResetOtp({ email: values.email, otp: values.otp });
 				toast.success("Email verified. Set your new password.");
 				router.replace(ROUTES.RESET_PASSWORD);
-				router.refresh();
 				return;
 			}
 			const response = await verifyOtp({ ...values, purpose: values.purpose });
@@ -82,8 +81,6 @@ export function OtpVerificationForm({
 			toast.success(response.message || "Account verified successfully");
 
 			router.replace(response.redirectTo);
-
-			router.refresh();
 		} catch (error) {
 			toast.error(formatError(error));
 		}

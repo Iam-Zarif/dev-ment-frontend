@@ -42,7 +42,7 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			<section className="mx-auto grid max-w-6xl gap-4 px-6 pb-20 md:grid-cols-3">
+			<section className="mx-auto grid max-w-4xl gap-4 px-6 pb-20 md:grid-cols-3">
 				{[
 					{
 						title: "Assessment workflow",

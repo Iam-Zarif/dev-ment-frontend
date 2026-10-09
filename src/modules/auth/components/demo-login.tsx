@@ -76,7 +76,6 @@ export function DemoLogin() {
 			toast.success(`${account.label} demo login successful`);
 
 			router.replace(response.redirectTo);
-			router.refresh();
 		} catch (error) {
 			toast.error(formatError(error));
 		} finally {

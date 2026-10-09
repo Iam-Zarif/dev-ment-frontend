@@ -65,7 +65,6 @@ export function LoginForm() {
 			);
 
 			router.replace(nextPath);
-			router.refresh();
 		} catch (error) {
 			toast.error(formatError(error));
 		}
