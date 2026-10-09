@@ -23,9 +23,9 @@ const apiUrlSchema = z
 	);
 
 const envSchema = z.object({
-	NEXT_PUBLIC_API_URL: apiUrlSchema,
+	NEXT_PUBLIC_API_URL: apiUrlSchema.default("/api/v1"),
 
-	NEXT_PUBLIC_APP_URL: z.string().trim().url("NEXT_PUBLIC_APP_URL must be a valid URL"),
+	NEXT_PUBLIC_APP_URL: z.string().trim().url("NEXT_PUBLIC_APP_URL must be a valid URL").optional(),
 });
 
 const parsedEnv = envSchema.safeParse({
