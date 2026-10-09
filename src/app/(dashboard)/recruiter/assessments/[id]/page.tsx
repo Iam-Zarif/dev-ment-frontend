@@ -1,4 +1,9 @@
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/constants";
 
 import { AssessmentDetailsView } from "@/modules/assessment/views/assessment-details-view";
 
@@ -16,5 +21,15 @@ type AssessmentPageProps = {
 export default async function AssessmentPage({ params }: AssessmentPageProps) {
 	const { id } = await params;
 
-	return <AssessmentDetailsView assessmentId={id} />;
+	return (
+		<div className="space-y-6">
+			<Button asChild variant="outline" size="sm">
+				<Link href={ROUTES.RECRUITER_ASSESSMENTS}>
+					<ArrowLeft className="size-4" />
+					Back to assessments
+				</Link>
+			</Button>
+			<AssessmentDetailsView assessmentId={id} />
+		</div>
+	);
 }

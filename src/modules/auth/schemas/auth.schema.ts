@@ -19,7 +19,10 @@ const legalNameSchema = z
 
 export const loginSchema = z.object({
 	email: emailSchema,
-	password: passwordSchema,
+	password: z
+		.string()
+		.min(1, "Password is required")
+		.max(72, "Password cannot exceed 72 characters"),
 });
 
 export const candidateRegistrationSchema = z
