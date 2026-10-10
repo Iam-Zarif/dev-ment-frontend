@@ -1,14 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, Loader2, Save } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, ArrowRight, CalendarDays, Clock3, Loader2, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/data-display/page-header";
+import { ErrorState } from "@/components/feedback/error-state";
+import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,6 +52,81 @@ function toIsoOrNull(value: string): string | null {
 	return new Date(value).toISOString();
 }
 
+
+function toLocalDateTime(value: string | null): string {
+	if (!value) return "";
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return "";
+	return new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
+		.toISOString()
+		.slice(0, 16);
+}
+
+function openPicker(input: HTMLInputElement | null) {
+	if (!input) return;
+	try {
+		if (typeof input.showPicker === "function") input.showPicker();
+		else input.focus();
+	} catch {
+		input.focus();
+	}
+}
+
+type DateTimeFieldProps = {
+	id: string;
+	value: string;
+	disabled: boolean;
+	onChange: (value: string) => void;
+};
+
+function DateTimeField({ id, value, disabled, onChange }: DateTimeFieldProps) {
+	const dateRef = useRef<HTMLInputElement>(null);
+	const timeRef = useRef<HTMLInputElement>(null);
+	const [date, time = ""] = value.split("T");
+
+	return (
+		<div className="grid gap-2 sm:grid-cols-2">
+			<div className="flex min-w-0 items-center gap-1">
+				<Input
+					ref={dateRef}
+					id={id}
+					type="date"
+					value={date}
+					disabled={disabled}
+					aria-label={`${id} date`}
+					className="min-w-0 flex-1"
+					onChange={(event) =>
+						onChange(event.target.value ? `${event.target.value}T${time || "09:00"}` : "")
+					}
+				/>
+				<Button type="button" variant="outline" size="icon" disabled={disabled}
+					aria-label="Open date picker" onClick={() => openPicker(dateRef.current)}>
+					<CalendarDays className="size-4" />
+				</Button>
+			</div>
+			<div className="flex min-w-0 items-center gap-1">
+				<Input
+					ref={timeRef}
+					id={`${id}-time`}
+					type="time"
+					value={date ? time : ""}
+					disabled={disabled || !date}
+					aria-label={`${id} time`}
+					className="min-w-0 flex-1"
+					onChange={(event) => {
+						if (date && event.target.value) onChange(`${date}T${event.target.value}`);
+					}}
+				/>
+				<Button type="button" variant="outline" size="icon"
+					disabled={disabled || !date} aria-label="Open time picker"
+					onClick={() => openPicker(timeRef.current)}>
+					<Clock3 className="size-4" />
+				</Button>
+			</div>
+		</div>
+	);
+}
+
 function FieldError({ message }: { message?: string }) {
 	if (!message) {
 		return null;
@@ -57,11 +135,18 @@ function FieldError({ message }: { message?: string }) {
 	return <p className="text-sm text-destructive">{message}</p>;
 }
 
-export function AssessmentBuilder() {
+export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = {}) {
 	const router = useRouter();
 	const queryClient = useQueryClient();
 
-	const { step, values, setStep, setValues, reset } = useAssessmentBuilderStore();
+	const { values, setValues, reset: resetBuilder } = useAssessmentBuilderStore();
+	const [step, setStep] = useState<AssessmentBuilderStep>(1);
+	const savingRef = useRef(false);
+	const existingQuery = useQuery({
+		queryKey: [...QUERY_KEYS.ASSESSMENTS, assessmentId],
+		queryFn: () => assessmentService.getById(assessmentId!),
+		enabled: Boolean(assessmentId),
+	});
 
 	const {
 		register,
@@ -69,6 +154,7 @@ export function AssessmentBuilder() {
 		trigger,
 		getValues,
 		handleSubmit,
+		reset: resetForm,
 		formState: { errors, isSubmitting },
 	} = useForm<AssessmentBuilderValues>({
 		resolver: zodResolver(assessmentBuilderSchema),
@@ -77,6 +163,23 @@ export function AssessmentBuilder() {
 
 		mode: "onTouched",
 	});
+
+	useEffect(() => {
+		const existing = existingQuery.data;
+		if (!existing) return;
+		resetForm({
+			title: existing.title,
+			jobRole: existing.jobRole,
+			skills: existing.skills.join(", "),
+			difficulty: existing.difficulty,
+			durationMinutes: existing.durationMinutes,
+			passPercentage: Number(existing.passPercentage),
+			suspiciousThreshold: existing.suspiciousThreshold,
+			applicationDeadline: toLocalDateTime(existing.applicationDeadline),
+			opensAt: toLocalDateTime(existing.opensAt),
+			closesAt: toLocalDateTime(existing.closesAt),
+		});
+	}, [existingQuery.data, resetForm]);
 
 	const saveCurrentValues = () => {
 		setValues(getValues());
@@ -105,63 +208,68 @@ export function AssessmentBuilder() {
 		setStep((step - 1) as AssessmentBuilderStep);
 	};
 
-	const onSubmit = async (formValues: AssessmentBuilderValues) => {
+
+	const onSave = async (formValues: AssessmentBuilderValues) => {
+		// Never save on picker selection, field blur, Enter, or form change.
+		if (savingRef.current) return;
+		savingRef.current = true;
 		try {
-			await assessmentService.createDraft({
+			const input = {
 				title: formValues.title.trim(),
-
 				jobRole: formValues.jobRole.trim(),
-
 				skills: parseAssessmentSkills(formValues.skills),
-
 				difficulty: formValues.difficulty,
-
 				durationMinutes: formValues.durationMinutes,
-
 				passPercentage: formValues.passPercentage,
-
 				suspiciousThreshold: formValues.suspiciousThreshold,
-
 				applicationDeadline: toIsoOrNull(formValues.applicationDeadline),
-
 				opensAt: toIsoOrNull(formValues.opensAt),
-
 				closesAt: toIsoOrNull(formValues.closesAt),
-			});
-
-			await queryClient.invalidateQueries({
-				queryKey: QUERY_KEYS.ASSESSMENTS,
-			});
-
-			reset();
-
-			toast.success("Assessment draft created");
-
-			router.replace(`${ROUTES.RECRUITER_ASSESSMENTS}?status=DRAFT`);
-
-			router.refresh();
+			};
+			if (assessmentId) {
+				await assessmentService.syncDraft(assessmentId, input);
+				toast.success("Assessment changes saved");
+				await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ASSESSMENTS });
+				router.push(ROUTES.RECRUITER_ASSESSMENT(assessmentId));
+			} else {
+				const draft = await assessmentService.createDraft(input);
+				toast.success("Draft saved. Add questions, then publish when ready.");
+				await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ASSESSMENTS });
+				resetBuilder();
+				router.push(ROUTES.RECRUITER_ASSESSMENT(draft.id));
+			}
 		} catch (error) {
 			toast.error(formatError(error));
+		} finally {
+			savingRef.current = false;
 		}
 	};
 
+	if (assessmentId && existingQuery.isPending) return <PageSkeleton />;
+	if (assessmentId && existingQuery.isError) {
+		return <ErrorState description={formatError(existingQuery.error)} onRetry={() => void existingQuery.refetch()} />;
+	}
+	if (assessmentId && existingQuery.data?.status !== "DRAFT") {
+		return <ErrorState description="Only draft assessments can be edited." />;
+	}
+
 	return (
 		<div className="mx-auto w-full max-w-2xl space-y-6">
-			<PageHeader title="Create assessment" />
+			<PageHeader title={assessmentId ? "Edit assessment draft" : "Create assessment"} />
 
 			<Card>
 				<CardContent className="space-y-6">
 					<div className="space-y-2">
 						<div className="flex items-center justify-between text-xs text-muted-foreground">
-							<span>Step {step} of 3</span>
+							<span>Step {step} of 4</span>
 
 							<span>{STEP_LABELS[step]}</span>
 						</div>
 
-						<Progress value={(step / 3) * 100} />
+						<Progress value={(step / 4) * 100} />
 					</div>
 
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+					<form onSubmit={(event) => event.preventDefault()} className="space-y-5" noValidate>
 						{step === 1 && (
 							<>
 								<div className="space-y-2">
@@ -297,16 +405,18 @@ export function AssessmentBuilder() {
 
 						{step === 3 && (
 							<>
+								<p className="text-sm text-muted-foreground">Choose a date first, then the time. These fields are optional. Nothing saves until you click the button below.</p>
 								<div className="space-y-2">
 									<Label htmlFor="applicationDeadline">Application deadline</Label>
 
-									<Input
-										id="applicationDeadline"
-										type="datetime-local"
-										disabled={isSubmitting}
-										aria-invalid={Boolean(errors.applicationDeadline)}
-										{...register("applicationDeadline")}
-									/>
+									<Controller
+							control={control}
+							name="applicationDeadline"
+							render={({ field }) => (
+								<DateTimeField id="applicationDeadline" value={field.value}
+									disabled={isSubmitting} onChange={field.onChange} />
+							)}
+						/>
 
 									<FieldError message={errors.applicationDeadline?.message} />
 								</div>
@@ -315,13 +425,14 @@ export function AssessmentBuilder() {
 									<div className="space-y-2">
 										<Label htmlFor="opensAt">Opens at</Label>
 
-										<Input
-											id="opensAt"
-											type="datetime-local"
-											disabled={isSubmitting}
-											aria-invalid={Boolean(errors.opensAt)}
-											{...register("opensAt")}
-										/>
+										<Controller
+							control={control}
+							name="opensAt"
+							render={({ field }) => (
+								<DateTimeField id="opensAt" value={field.value}
+									disabled={isSubmitting} onChange={field.onChange} />
+							)}
+						/>
 
 										<FieldError message={errors.opensAt?.message} />
 									</div>
@@ -329,13 +440,14 @@ export function AssessmentBuilder() {
 									<div className="space-y-2">
 										<Label htmlFor="closesAt">Closes at</Label>
 
-										<Input
-											id="closesAt"
-											type="datetime-local"
-											disabled={isSubmitting}
-											aria-invalid={Boolean(errors.closesAt)}
-											{...register("closesAt")}
-										/>
+										<Controller
+							control={control}
+							name="closesAt"
+							render={({ field }) => (
+								<DateTimeField id="closesAt" value={field.value}
+									disabled={isSubmitting} onChange={field.onChange} />
+							)}
+						/>
 
 										<FieldError message={errors.closesAt?.message} />
 									</div>
@@ -346,7 +458,7 @@ export function AssessmentBuilder() {
 						<div className="flex items-center justify-between gap-3 border-t pt-5">
 							{step === 1 ? (
 								<Button asChild type="button" variant="ghost">
-									<Link href={ROUTES.RECRUITER_ASSESSMENTS}>Cancel</Link>
+									<Link href={assessmentId ? ROUTES.RECRUITER_ASSESSMENT(assessmentId) : ROUTES.RECRUITER_ASSESSMENTS}>Cancel</Link>
 								</Button>
 							) : (
 								<Button
@@ -366,7 +478,7 @@ export function AssessmentBuilder() {
 									<ArrowRight className="size-4" />
 								</Button>
 							) : (
-								<Button type="submit" disabled={isSubmitting}>
+								<Button type="button" disabled={isSubmitting} onClick={() => void handleSubmit(onSave)()}>
 									{isSubmitting ? (
 										<>
 											<Loader2 className="size-4 animate-spin" />
@@ -375,7 +487,7 @@ export function AssessmentBuilder() {
 									) : (
 										<>
 											<Save className="size-4" />
-											Save draft
+											{assessmentId ? "Save changes" : "Save & add questions"}
 										</>
 									)}
 								</Button>

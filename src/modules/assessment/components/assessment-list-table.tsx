@@ -1,4 +1,4 @@
-import { Link } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import {
 	Table,
@@ -39,6 +39,8 @@ export function AssessmentListTable({ items }: { items: RecruiterAssessment[] })
 						<TableHead>Applications</TableHead>
 
 						<TableHead>Updated</TableHead>
+
+						<TableHead>Actions</TableHead>
 					</TableRow>
 				</TableHeader>
 
@@ -76,7 +78,28 @@ export function AssessmentListTable({ items }: { items: RecruiterAssessment[] })
 
 							<TableCell className="text-muted-foreground">
 								{formatRelativeTime(assessment.updatedAt)}
-							</TableCell>
+						</TableCell>
+						<TableCell>
+							<div className="flex flex-wrap items-center gap-3 text-sm">
+								{assessment.status === "DRAFT" && !assessment.creditConsumedAt ? (
+									<>
+										<Link href={ROUTES.RECRUITER_ASSESSMENT_EDIT(assessment.id)}
+											className="font-medium text-primary hover:underline">
+											Edit details
+										</Link>
+										<Link href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
+											className="font-medium text-primary hover:underline">
+											Questions / Publish
+										</Link>
+									</>
+								) : (
+									<Link href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
+										className="font-medium text-primary hover:underline">
+										View
+									</Link>
+								)}
+							</div>
+						</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

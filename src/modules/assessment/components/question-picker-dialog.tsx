@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Search } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useDebounce } from "@/hooks/use-debounce";
-import { QUERY_KEYS } from "@/lib/constants";
+import { QUERY_KEYS, ROUTES } from "@/lib/constants";
 import { questionService } from "@/modules/question/services/question.service";
 import type { RecruiterQuestion } from "@/types/question.types";
 
@@ -70,6 +71,8 @@ export function QuestionPickerDialog({ open, onOpenChange, attachedQuestionIds, 
 
 		try {
 			await onAttach(question);
+		} catch {
+			// The parent already reports the API error.
 		} finally {
 			setAttachingId(null);
 		}
@@ -104,7 +107,11 @@ export function QuestionPickerDialog({ open, onOpenChange, attachedQuestionIds, 
 						<p className="py-8 text-center text-sm text-destructive">Unable to load questions.</p>
 					) : availableQuestions.length === 0 ? (
 						<p className="py-8 text-center text-sm text-muted-foreground">
-							No available questions.
+							No available questions.{" "}
+							<Link href={ROUTES.RECRUITER_QUESTIONS_NEW} target="_blank"
+								rel="noopener noreferrer" className="font-medium text-primary hover:underline">
+								Create one in the question bank ↗
+							</Link>
 						</p>
 					) : (
 						availableQuestions.map((question) => (

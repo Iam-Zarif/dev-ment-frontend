@@ -1,10 +1,12 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/data-display/page-header";
+import { ROUTES } from "@/lib/constants";
 import { ErrorState } from "@/components/feedback/error-state";
 import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -116,13 +118,28 @@ export function AssessmentDetailsView({ assessmentId }: Props) {
 				title={assessment.title || "Untitled assessment"}
 				action={
 					editable ? (
-						<Button type="button" onClick={() => setPickerOpen(true)}>
-							<Plus className="size-4" />
-							Add question
-						</Button>
+						<div className="flex flex-wrap items-center gap-2">
+							<Button asChild type="button" variant="outline">
+								<Link href={ROUTES.RECRUITER_ASSESSMENT_EDIT(assessment.id)}>
+									<Pencil className="size-4" />
+									Edit details
+								</Link>
+							</Button>
+							<Button type="button" onClick={() => setPickerOpen(true)}>
+								<Plus className="size-4" />
+								Add question
+							</Button>
+						</div>
 					) : undefined
 				}
 			/>
+
+			{editable && (
+				<p className="text-sm text-muted-foreground">
+					Step 4 of 4 — Add questions from your question bank, review the details,
+					then publish when ready. Your draft remains editable until publishing.
+				</p>
+			)}
 
 			<Card>
 				<CardContent className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -154,7 +171,15 @@ export function AssessmentDetailsView({ assessmentId }: Props) {
 
 			<div className="space-y-3">
 				<div>
-					<h2 className="font-heading text-lg font-semibold">Questions</h2>
+					<div className="flex flex-wrap items-center justify-between gap-2">
+							<h2 className="font-heading text-lg font-semibold">Questions</h2>
+							{editable && (
+								<Link href={ROUTES.RECRUITER_QUESTIONS_NEW} target="_blank"
+									rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline">
+									Create a new question ↗
+								</Link>
+							)}
+						</div>
 
 					<p className="text-sm text-muted-foreground">
 						{assessment.assessmentQuestions.length} question

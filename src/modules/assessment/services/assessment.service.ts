@@ -44,6 +44,14 @@ async function createDraft(input: CreateAssessmentDraftInput) {
 	return response.data.data;
 }
 
+async function syncDraft(assessmentId: string, input: CreateAssessmentDraftInput) {
+	const response = await apiClient.patch<ApiResponse<AssessmentDraftResult>>(
+		API_ENDPOINTS.assessments.draftById(assessmentId),
+		{ ...input, saveMode: "MANUAL" },
+	);
+	return response.data.data;
+}
+
 async function addQuestion(assessmentId: string, input: AttachAssessmentQuestionInput) {
 	const response = await apiClient.post<ApiResponse<AssessmentQuestionItem>>(
 		API_ENDPOINTS.assessments.questions(assessmentId),
@@ -113,6 +121,7 @@ export const assessmentService = {
 	getAll,
 	getById,
 	createDraft,
+	syncDraft,
 	addQuestion,
 	updateQuestion,
 	reorderQuestions,

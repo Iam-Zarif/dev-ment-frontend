@@ -41,6 +41,8 @@ export const ROUTES = {
 
 	RECRUITER_ASSESSMENT: (id: string) => `/recruiter/assessments/${id}`,
 
+	RECRUITER_ASSESSMENT_EDIT: (id: string) => `/recruiter/assessments/${id}/edit`,
+
 	RECRUITER_QUESTIONS: "/recruiter/questions",
 
 	RECRUITER_QUESTIONS_NEW: "/recruiter/questions/new",
