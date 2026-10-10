@@ -1,5 +1,5 @@
-import { PageHeader } from "@/components/data-display/page-header";
+import { CandidateDashboardView } from "@/modules/dashboard/views/candidate-dashboard-view";
 
 export default function CandidatePage() {
-	return <PageHeader title="Candidate overview" />;
+	return <CandidateDashboardView />;
 }

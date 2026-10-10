@@ -84,6 +84,7 @@ export const PAGINATION = {
 
 export const QUERY_KEYS = {
 	AUTH: ["auth"] as const,
+	DASHBOARD: ["dashboard"] as const,
 	ME: ["auth", "me"] as const,
 
 	ASSESSMENTS: ["assessments"] as const,

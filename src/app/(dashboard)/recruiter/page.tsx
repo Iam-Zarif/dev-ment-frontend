@@ -1,5 +1,5 @@
-import { PageHeader } from "@/components/data-display/page-header";
+import { RecruiterDashboardView } from "@/modules/dashboard/views/recruiter-dashboard-view";
 
 export default function RecruiterPage() {
-	return <PageHeader title="Recruiter overview" />;
+	return <RecruiterDashboardView />;
 }

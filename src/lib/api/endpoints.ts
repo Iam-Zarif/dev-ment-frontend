@@ -14,6 +14,11 @@ export const API_ENDPOINTS = {
 		resetPassword: "/auth/reset-password",
 	},
 
+	dashboard: {
+		recruiter: "/dashboard/recruiter",
+		candidate: "/dashboard/candidate",
+	},
+
 	assessments: {
 		root: "/assessments",
 		draft: "/assessments/draft",
