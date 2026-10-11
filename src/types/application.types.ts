@@ -1,5 +1,7 @@
 import type { DifficultyLevel } from "@/types/assessment.types";
+import type { AttemptStatus } from "@/types/attempt.types";
 import type { PaginatedData } from "@/types/common.types";
+import type { InvitationStatus } from "@/types/invitation.types";
 
 export const APPLICATION_STATUSES = ["APPLIED", "SHORTLISTED", "REJECTED", "INVITED"] as const;
 
@@ -8,6 +10,9 @@ export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 export type ApplyAssessmentInput = {
 	assessmentId: string;
 	coverNote?: string | null;
+	githubUrl?: string;
+	linkedinUrl?: string;
+	portfolioUrl?: string;
 };
 
 export type ApplicationCreated = {
@@ -61,10 +66,16 @@ export type CandidateApplication = {
 
 	invitation: {
 		id: string;
-		status: string;
+		status: InvitationStatus;
 		expiresAt: string;
-		sentAt: string;
+		sentAt: string | null;
 		acceptedAt: string | null;
+		attempt: {
+			id: string;
+			status: AttemptStatus;
+			startedAt: string;
+			submittedAt: string | null;
+		} | null;
 	} | null;
 };
 
@@ -112,10 +123,16 @@ export type CandidateApplicationDetails = {
 
 	invitation: {
 		id: string;
-		status: string;
+		status: InvitationStatus;
 		expiresAt: string;
-		sentAt: string;
+		sentAt: string | null;
 		acceptedAt: string | null;
+		attempt: {
+			id: string;
+			status: AttemptStatus;
+			startedAt: string;
+			submittedAt: string | null;
+		} | null;
 	} | null;
 };
 

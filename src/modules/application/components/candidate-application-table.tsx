@@ -9,6 +9,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ROUTES } from "@/lib/constants";
+import { CandidateApplicationActions } from "@/modules/application/components/candidate-application-actions";
 import { ApplicationStatusBadge } from "@/modules/application/components/application-status-badge";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
 import type { CandidateApplication } from "@/types/application.types";
@@ -29,6 +30,8 @@ export function CandidateApplicationTable({ items }: { items: CandidateApplicati
 						<TableHead>Difficulty</TableHead>
 
 						<TableHead>Applied</TableHead>
+
+						<TableHead className="text-right">Action</TableHead>
 					</TableRow>
 				</TableHeader>
 
@@ -62,6 +65,10 @@ export function CandidateApplicationTable({ items }: { items: CandidateApplicati
 
 							<TableCell className="text-muted-foreground">
 								{formatRelativeTime(application.appliedAt)}
+							</TableCell>
+
+							<TableCell className="text-right">
+								<CandidateApplicationActions application={application} />
 							</TableCell>
 						</TableRow>
 					))}

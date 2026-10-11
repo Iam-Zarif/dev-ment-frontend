@@ -40,8 +40,17 @@ async function accept(token: string) {
 	return response.data.data;
 }
 
+async function acceptById(invitationId: string) {
+	const response = await apiClient.post<ApiResponse<AcceptedInvitation>>(
+		API_ENDPOINTS.invitations.acceptById(invitationId),
+	);
+
+	return response.data.data;
+}
+
 export const invitationService = {
 	create,
 	verify,
 	accept,
+	acceptById,
 };

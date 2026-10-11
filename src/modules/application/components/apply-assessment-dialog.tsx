@@ -15,6 +15,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { QUERY_KEYS } from "@/lib/constants";
@@ -46,6 +47,9 @@ export function ApplyAssessmentDialog({ assessmentId, open, onOpenChange }: Prop
 
 		defaultValues: {
 			coverNote: "",
+			githubUrl: "",
+			linkedinUrl: "",
+			portfolioUrl: "",
 		},
 	});
 
@@ -53,8 +57,22 @@ export function ApplyAssessmentDialog({ assessmentId, open, onOpenChange }: Prop
 		try {
 			await applicationService.apply({
 				assessmentId,
-
 				coverNote: values.coverNote.trim() || null,
+				...(values.githubUrl.trim()
+					? {
+							githubUrl: values.githubUrl.trim(),
+						}
+					: {}),
+				...(values.linkedinUrl.trim()
+					? {
+							linkedinUrl: values.linkedinUrl.trim(),
+						}
+					: {}),
+				...(values.portfolioUrl.trim()
+					? {
+							portfolioUrl: values.portfolioUrl.trim(),
+						}
+					: {}),
 			});
 
 			await queryClient.invalidateQueries({
@@ -76,25 +94,74 @@ export function ApplyAssessmentDialog({ assessmentId, open, onOpenChange }: Prop
 				<DialogHeader>
 					<DialogTitle>Apply for assessment</DialogTitle>
 
-					<DialogDescription>Add an optional note for the recruiter.</DialogDescription>
+					<DialogDescription>
+						Add an optional note and professional links for the recruiter.
+					</DialogDescription>
 				</DialogHeader>
 
-				<form id="apply-assessment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-					<Label htmlFor="coverNote">Cover note</Label>
+				<form id="apply-assessment-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+					<div className="grid gap-4 sm:grid-cols-2">
+						<div className="space-y-2">
+							<Label htmlFor="githubUrl">GitHub URL</Label>
+							<Input
+								id="githubUrl"
+								type="url"
+								placeholder="https://github.com/username"
+								disabled={isSubmitting}
+								aria-invalid={Boolean(errors.githubUrl)}
+								{...register("githubUrl")}
+							/>
+							{errors.githubUrl && (
+								<p className="text-sm text-destructive">{errors.githubUrl.message}</p>
+							)}
+						</div>
 
-					<Textarea
-						id="coverNote"
-						rows={6}
-						maxLength={5000}
-						placeholder="Briefly introduce your relevant experience."
-						disabled={isSubmitting}
-						aria-invalid={Boolean(errors.coverNote)}
-						{...register("coverNote")}
-					/>
+						<div className="space-y-2">
+							<Label htmlFor="linkedinUrl">LinkedIn URL</Label>
+							<Input
+								id="linkedinUrl"
+								type="url"
+								placeholder="https://linkedin.com/in/username"
+								disabled={isSubmitting}
+								aria-invalid={Boolean(errors.linkedinUrl)}
+								{...register("linkedinUrl")}
+							/>
+							{errors.linkedinUrl && (
+								<p className="text-sm text-destructive">{errors.linkedinUrl.message}</p>
+							)}
+						</div>
+					</div>
 
-					{errors.coverNote && (
-						<p className="text-sm text-destructive">{errors.coverNote.message}</p>
-					)}
+					<div className="space-y-2">
+						<Label htmlFor="portfolioUrl">Portfolio URL</Label>
+						<Input
+							id="portfolioUrl"
+							type="url"
+							placeholder="https://yourportfolio.com"
+							disabled={isSubmitting}
+							aria-invalid={Boolean(errors.portfolioUrl)}
+							{...register("portfolioUrl")}
+						/>
+						{errors.portfolioUrl && (
+							<p className="text-sm text-destructive">{errors.portfolioUrl.message}</p>
+						)}
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="coverNote">Cover note</Label>
+						<Textarea
+							id="coverNote"
+							rows={5}
+							maxLength={5000}
+							placeholder="Briefly introduce your relevant experience."
+							disabled={isSubmitting}
+							aria-invalid={Boolean(errors.coverNote)}
+							{...register("coverNote")}
+						/>
+						{errors.coverNote && (
+							<p className="text-sm text-destructive">{errors.coverNote.message}</p>
+						)}
+					</div>
 				</form>
 
 				<DialogFooter>

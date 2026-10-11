@@ -65,6 +65,7 @@ export const API_ENDPOINTS = {
 		root: "/invitations",
 		verify: "/invitations/verify",
 		accept: "/invitations/accept",
+		acceptById: (id: string) => `/invitations/${id}/accept`,
 
 		resend: (id: string) => `/invitations/${id}/resend`,
 

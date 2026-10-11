@@ -7,6 +7,7 @@ import { ErrorState } from "@/components/feedback/error-state";
 import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { ApplicationStatusBadge } from "@/modules/application/components/application-status-badge";
+import { CandidateApplicationActions } from "@/modules/application/components/candidate-application-actions";
 import { useCandidateApplication } from "@/modules/application/hooks/use-candidate-application";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
 import { formatDateTime } from "@/utils/format-date";
@@ -127,6 +128,8 @@ export function CandidateApplicationDetailsView({ applicationId }: { application
 								<ApplicationStatusBadge status={application.status} />
 							</div>
 						</div>
+
+						<CandidateApplicationActions application={application} />
 
 						{application.invitation && (
 							<>
