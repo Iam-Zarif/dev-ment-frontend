@@ -1,5 +1,5 @@
-import type { AssessmentStatus } from "@/types/assessment.types";
 import type { ApplicationStatus } from "@/types/application.types";
+import type { AssessmentStatus } from "@/types/assessment.types";
 
 export type RecruiterDashboard = {
 	company: { name: string; isVerified: boolean };

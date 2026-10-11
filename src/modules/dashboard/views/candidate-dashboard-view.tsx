@@ -2,8 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
-	ArrowRight, Award, ClipboardList, Clock3, FileCheck2,
-	Mail, SearchCheck,
+	ArrowRight,
+	Award,
+	ClipboardList,
+	Clock3,
+	FileCheck2,
+	Mail,
+	SearchCheck,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -28,14 +33,17 @@ export function CandidateDashboardView() {
 
 	if (query.isPending) return <PageSkeleton />;
 	if (query.isError) {
-		return <ErrorState description={formatError(query.error)} onRetry={() => void query.refetch()} />;
+		return (
+			<ErrorState description={formatError(query.error)} onRetry={() => void query.refetch()} />
+		);
 	}
 
 	const { stats, recentApplications, availableAssessments } = query.data;
 
 	return (
 		<div className="space-y-6">
-			<PageHeader title="Candidate overview"
+			<PageHeader
+				title="Candidate overview"
 				description="Your assessment applications, invitations and results."
 				action={
 					<Button asChild>
@@ -49,8 +57,12 @@ export function CandidateDashboardView() {
 			<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
 				<StatCard title="Applications" value={stats.applications} icon={ClipboardList} />
 				<StatCard title="Shortlisted" value={stats.shortlisted} icon={FileCheck2} />
-				<StatCard title="Pending invitations" value={stats.pendingInvitations} icon={Mail}
-					description="Invitations awaiting a response" />
+				<StatCard
+					title="Pending invitations"
+					value={stats.pendingInvitations}
+					icon={Mail}
+					description="Invitations awaiting a response"
+				/>
 				<StatCard title="Active attempts" value={stats.activeAttempts} icon={Clock3} />
 				<StatCard title="Released results" value={stats.releasedResults} icon={Award} />
 			</div>
@@ -59,8 +71,10 @@ export function CandidateDashboardView() {
 				<Card>
 					<CardHeader className="grid grid-cols-[1fr_auto] items-center gap-2">
 						<CardTitle>Recent applications</CardTitle>
-						<Link href={ROUTES.CANDIDATE_APPLICATIONS}
-							className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+						<Link
+							href={ROUTES.CANDIDATE_APPLICATIONS}
+							className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+						>
 							View all <ArrowRight className="size-3" />
 						</Link>
 					</CardHeader>
@@ -72,18 +86,25 @@ export function CandidateDashboardView() {
 						) : (
 							<ul className="divide-y">
 								{recentApplications.map((item) => (
-									<li key={item.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+									<li
+										key={item.id}
+										className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+									>
 										<div className="min-w-0">
-											<Link href={ROUTES.CANDIDATE_APPLICATION(item.id)}
-												className="block truncate font-medium hover:underline">
+											<Link
+												href={ROUTES.CANDIDATE_APPLICATION(item.id)}
+												className="block truncate font-medium hover:underline"
+											>
 												{item.assessment.title}
 											</Link>
 											<p className="mt-1 truncate text-xs text-muted-foreground">
 												{item.assessment.companyName} · {formatRelativeTime(item.appliedAt)}
 											</p>
 											{item.invitation?.attempt?.resultReleasedAt && (
-												<Link href={ROUTES.CANDIDATE_RESULT(item.invitation.attempt.id)}
-													className="mt-1 inline-block text-xs font-medium text-primary hover:underline">
+												<Link
+													href={ROUTES.CANDIDATE_RESULT(item.invitation.attempt.id)}
+													className="mt-1 inline-block text-xs font-medium text-primary hover:underline"
+												>
 													View released result
 												</Link>
 											)}
@@ -99,8 +120,10 @@ export function CandidateDashboardView() {
 				<Card>
 					<CardHeader className="grid grid-cols-[1fr_auto] items-center gap-2">
 						<CardTitle>Open assessments</CardTitle>
-						<Link href={ROUTES.CANDIDATE_ASSESSMENTS}
-							className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+						<Link
+							href={ROUTES.CANDIDATE_ASSESSMENTS}
+							className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+						>
 							Browse all <ArrowRight className="size-3" />
 						</Link>
 					</CardHeader>
@@ -112,10 +135,15 @@ export function CandidateDashboardView() {
 						) : (
 							<ul className="divide-y">
 								{availableAssessments.map((item) => (
-									<li key={item.id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+									<li
+										key={item.id}
+										className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+									>
 										<div className="min-w-0">
-											<Link href={ROUTES.CANDIDATE_ASSESSMENT(item.id)}
-												className="block truncate font-medium hover:underline">
+											<Link
+												href={ROUTES.CANDIDATE_ASSESSMENT(item.id)}
+												className="block truncate font-medium hover:underline"
+											>
 												{item.title}
 											</Link>
 											<p className="mt-1 truncate text-xs text-muted-foreground">

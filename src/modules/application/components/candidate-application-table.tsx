@@ -9,8 +9,8 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { ROUTES } from "@/lib/constants";
-import { CandidateApplicationActions } from "@/modules/application/components/candidate-application-actions";
 import { ApplicationStatusBadge } from "@/modules/application/components/application-status-badge";
+import { CandidateApplicationActions } from "@/modules/application/components/candidate-application-actions";
 import { formatEnumLabel } from "@/modules/assessment/utils/format-enum-label";
 import type { CandidateApplication } from "@/types/application.types";
 import { formatRelativeTime } from "@/utils/format-date";

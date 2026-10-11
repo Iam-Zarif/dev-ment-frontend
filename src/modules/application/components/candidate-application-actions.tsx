@@ -13,10 +13,7 @@ import { invitationService } from "@/modules/invitation/services/invitation.serv
 import type { CandidateApplication } from "@/types/application.types";
 import { formatError } from "@/utils/format-error";
 
-type CandidateApplicationActionData = Pick<
-	CandidateApplication,
-	"id" | "status" | "invitation"
->;
+type CandidateApplicationActionData = Pick<CandidateApplication, "id" | "status" | "invitation">;
 
 export function CandidateApplicationActions({
 	application,

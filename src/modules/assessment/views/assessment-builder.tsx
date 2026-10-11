@@ -52,14 +52,11 @@ function toIsoOrNull(value: string): string | null {
 	return new Date(value).toISOString();
 }
 
-
 function toLocalDateTime(value: string | null): string {
 	if (!value) return "";
 	const date = new Date(value);
 	if (Number.isNaN(date.getTime())) return "";
-	return new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
-		.toISOString()
-		.slice(0, 16);
+	return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
 }
 
 function openPicker(input: HTMLInputElement | null) {
@@ -99,8 +96,14 @@ function DateTimeField({ id, value, disabled, onChange }: DateTimeFieldProps) {
 						onChange(event.target.value ? `${event.target.value}T${time || "09:00"}` : "")
 					}
 				/>
-				<Button type="button" variant="outline" size="icon" disabled={disabled}
-					aria-label="Open date picker" onClick={() => openPicker(dateRef.current)}>
+				<Button
+					type="button"
+					variant="outline"
+					size="icon"
+					disabled={disabled}
+					aria-label="Open date picker"
+					onClick={() => openPicker(dateRef.current)}
+				>
 					<CalendarDays className="size-4" />
 				</Button>
 			</div>
@@ -117,9 +120,14 @@ function DateTimeField({ id, value, disabled, onChange }: DateTimeFieldProps) {
 						if (date && event.target.value) onChange(`${date}T${event.target.value}`);
 					}}
 				/>
-				<Button type="button" variant="outline" size="icon"
-					disabled={disabled || !date} aria-label="Open time picker"
-					onClick={() => openPicker(timeRef.current)}>
+				<Button
+					type="button"
+					variant="outline"
+					size="icon"
+					disabled={disabled || !date}
+					aria-label="Open time picker"
+					onClick={() => openPicker(timeRef.current)}
+				>
 					<Clock3 className="size-4" />
 				</Button>
 			</div>
@@ -142,11 +150,19 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 	const { values, setValues, reset: resetBuilder } = useAssessmentBuilderStore();
 	const [step, setStep] = useState<AssessmentBuilderStep>(1);
 	const savingRef = useRef(false);
-	const existingQuery = useQuery({
-		queryKey: [...QUERY_KEYS.ASSESSMENTS, assessmentId],
-		queryFn: () => assessmentService.getById(assessmentId!),
-		enabled: Boolean(assessmentId),
-	});
+	
+const existingQuery = useQuery({
+	queryKey: [...QUERY_KEYS.ASSESSMENTS, assessmentId],
+	queryFn: () => {
+		if (!assessmentId) {
+			throw new Error("Assessment ID is required");
+		}
+
+		return assessmentService.getById(assessmentId);
+	},
+	enabled: Boolean(assessmentId),
+});
+
 
 	const {
 		register,
@@ -208,7 +224,6 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 		setStep((step - 1) as AssessmentBuilderStep);
 	};
 
-
 	const onSave = async (formValues: AssessmentBuilderValues) => {
 		// Never save on picker selection, field blur, Enter, or form change.
 		if (savingRef.current) return;
@@ -247,7 +262,12 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 
 	if (assessmentId && existingQuery.isPending) return <PageSkeleton />;
 	if (assessmentId && existingQuery.isError) {
-		return <ErrorState description={formatError(existingQuery.error)} onRetry={() => void existingQuery.refetch()} />;
+		return (
+			<ErrorState
+				description={formatError(existingQuery.error)}
+				onRetry={() => void existingQuery.refetch()}
+			/>
+		);
 	}
 	if (assessmentId && existingQuery.data?.status !== "DRAFT") {
 		return <ErrorState description="Only draft assessments can be edited." />;
@@ -405,18 +425,25 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 
 						{step === 3 && (
 							<>
-								<p className="text-sm text-muted-foreground">Choose a date first, then the time. These fields are optional. Nothing saves until you click the button below.</p>
+								<p className="text-sm text-muted-foreground">
+									Choose a date first, then the time. These fields are optional. Nothing saves until
+									you click the button below.
+								</p>
 								<div className="space-y-2">
 									<Label htmlFor="applicationDeadline">Application deadline</Label>
 
 									<Controller
-							control={control}
-							name="applicationDeadline"
-							render={({ field }) => (
-								<DateTimeField id="applicationDeadline" value={field.value}
-									disabled={isSubmitting} onChange={field.onChange} />
-							)}
-						/>
+										control={control}
+										name="applicationDeadline"
+										render={({ field }) => (
+											<DateTimeField
+												id="applicationDeadline"
+												value={field.value}
+												disabled={isSubmitting}
+												onChange={field.onChange}
+											/>
+										)}
+									/>
 
 									<FieldError message={errors.applicationDeadline?.message} />
 								</div>
@@ -426,13 +453,17 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 										<Label htmlFor="opensAt">Opens at</Label>
 
 										<Controller
-							control={control}
-							name="opensAt"
-							render={({ field }) => (
-								<DateTimeField id="opensAt" value={field.value}
-									disabled={isSubmitting} onChange={field.onChange} />
-							)}
-						/>
+											control={control}
+											name="opensAt"
+											render={({ field }) => (
+												<DateTimeField
+													id="opensAt"
+													value={field.value}
+													disabled={isSubmitting}
+													onChange={field.onChange}
+												/>
+											)}
+										/>
 
 										<FieldError message={errors.opensAt?.message} />
 									</div>
@@ -441,13 +472,17 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 										<Label htmlFor="closesAt">Closes at</Label>
 
 										<Controller
-							control={control}
-							name="closesAt"
-							render={({ field }) => (
-								<DateTimeField id="closesAt" value={field.value}
-									disabled={isSubmitting} onChange={field.onChange} />
-							)}
-						/>
+											control={control}
+											name="closesAt"
+											render={({ field }) => (
+												<DateTimeField
+													id="closesAt"
+													value={field.value}
+													disabled={isSubmitting}
+													onChange={field.onChange}
+												/>
+											)}
+										/>
 
 										<FieldError message={errors.closesAt?.message} />
 									</div>
@@ -458,7 +493,15 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 						<div className="flex items-center justify-between gap-3 border-t pt-5">
 							{step === 1 ? (
 								<Button asChild type="button" variant="ghost">
-									<Link href={assessmentId ? ROUTES.RECRUITER_ASSESSMENT(assessmentId) : ROUTES.RECRUITER_ASSESSMENTS}>Cancel</Link>
+									<Link
+										href={
+											assessmentId
+												? ROUTES.RECRUITER_ASSESSMENT(assessmentId)
+												: ROUTES.RECRUITER_ASSESSMENTS
+										}
+									>
+										Cancel
+									</Link>
 								</Button>
 							) : (
 								<Button
@@ -478,7 +521,11 @@ export function AssessmentBuilder({ assessmentId }: { assessmentId?: string } = 
 									<ArrowRight className="size-4" />
 								</Button>
 							) : (
-								<Button type="button" disabled={isSubmitting} onClick={() => void handleSubmit(onSave)()}>
+								<Button
+									type="button"
+									disabled={isSubmitting}
+									onClick={() => void handleSubmit(onSave)()}
+								>
 									{isSubmitting ? (
 										<>
 											<Loader2 className="size-4 animate-spin" />

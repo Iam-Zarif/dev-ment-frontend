@@ -4,10 +4,14 @@ const optionalUrl = z
 	.string()
 	.trim()
 	.max(2048, "URL is too long")
-	.refine((value) => !value || z.url().safeParse(value).success, "Enter a valid URL");
+	.refine(
+		(value) => !value || (z.string().url().safeParse(value).success && /^https?:\/\//i.test(value)),
+		"Enter a valid HTTP or HTTPS URL",
+	);
 
 export const applyAssessmentSchema = z.object({
 	coverNote: z.string().trim().max(5000, "Cover note cannot exceed 5000 characters"),
+
 	githubUrl: optionalUrl,
 	linkedinUrl: optionalUrl,
 	portfolioUrl: optionalUrl,

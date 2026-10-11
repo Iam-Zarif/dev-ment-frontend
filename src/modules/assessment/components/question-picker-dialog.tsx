@@ -2,8 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Search } from "lucide-react";
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -108,8 +108,12 @@ export function QuestionPickerDialog({ open, onOpenChange, attachedQuestionIds, 
 					) : availableQuestions.length === 0 ? (
 						<p className="py-8 text-center text-sm text-muted-foreground">
 							No available questions.{" "}
-							<Link href={ROUTES.RECRUITER_QUESTIONS_NEW} target="_blank"
-								rel="noopener noreferrer" className="font-medium text-primary hover:underline">
+							<Link
+								href={ROUTES.RECRUITER_QUESTIONS_NEW}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="font-medium text-primary hover:underline"
+							>
 								Create one in the question bank ↗
 							</Link>
 						</p>

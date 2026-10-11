@@ -78,28 +78,34 @@ export function AssessmentListTable({ items }: { items: RecruiterAssessment[] })
 
 							<TableCell className="text-muted-foreground">
 								{formatRelativeTime(assessment.updatedAt)}
-						</TableCell>
-						<TableCell>
-							<div className="flex flex-wrap items-center gap-3 text-sm">
-								{assessment.status === "DRAFT" && !assessment.creditConsumedAt ? (
-									<>
-										<Link href={ROUTES.RECRUITER_ASSESSMENT_EDIT(assessment.id)}
-											className="font-medium text-primary hover:underline">
-											Edit details
+							</TableCell>
+							<TableCell>
+								<div className="flex flex-wrap items-center gap-3 text-sm">
+									{assessment.status === "DRAFT" && !assessment.creditConsumedAt ? (
+										<>
+											<Link
+												href={ROUTES.RECRUITER_ASSESSMENT_EDIT(assessment.id)}
+												className="font-medium text-primary hover:underline"
+											>
+												Edit details
+											</Link>
+											<Link
+												href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
+												className="font-medium text-primary hover:underline"
+											>
+												Questions / Publish
+											</Link>
+										</>
+									) : (
+										<Link
+											href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
+											className="font-medium text-primary hover:underline"
+										>
+											View
 										</Link>
-										<Link href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
-											className="font-medium text-primary hover:underline">
-											Questions / Publish
-										</Link>
-									</>
-								) : (
-									<Link href={ROUTES.RECRUITER_ASSESSMENT(assessment.id)}
-										className="font-medium text-primary hover:underline">
-										View
-									</Link>
-								)}
-							</div>
-						</TableCell>
+									)}
+								</div>
+							</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
