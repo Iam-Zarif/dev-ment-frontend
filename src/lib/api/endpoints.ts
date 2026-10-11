@@ -107,6 +107,7 @@ export const API_ENDPOINTS = {
 
 		plans: "/payments/plans",
 		checkout: "/payments/checkout",
+		checkoutSession: (sessionId: string) => `/payments/checkout-session/${encodeURIComponent(sessionId)}`,
 		credits: "/payments/credits",
 
 		byId: (id: string) => `/payments/${id}`,

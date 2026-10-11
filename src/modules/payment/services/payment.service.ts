@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from "@/lib/api/endpoints";
 import type { ApiResponse } from "@/types/api.types";
 import type {
 	CheckoutResult,
+	CheckoutVerification,
 	CreditBalance,
 	PaymentListData,
 	PaymentStatus,
@@ -26,6 +27,14 @@ async function checkout(planCode: string) {
 	return response.data.data;
 }
 
+async function getCheckoutVerification(sessionId: string) {
+	const response = await apiClient.get<ApiResponse<CheckoutVerification>>(
+		API_ENDPOINTS.payments.checkoutSession(sessionId),
+	);
+
+	return response.data.data;
+}
+
 async function getCredits() {
 	const response = await apiClient.get<ApiResponse<CreditBalance>>(API_ENDPOINTS.payments.credits);
 
@@ -43,6 +52,7 @@ async function getMine(params: { page: number; limit: number; status?: PaymentSt
 export const paymentService = {
 	getPlans,
 	checkout,
+	getCheckoutVerification,
 	getCredits,
 	getMine,
 };

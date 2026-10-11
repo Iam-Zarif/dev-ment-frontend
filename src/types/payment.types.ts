@@ -24,6 +24,15 @@ export type CheckoutResult = {
 	checkoutUrl: string;
 };
 
+export type CheckoutVerification = {
+	id: string;
+	status: PaymentStatus;
+	paidAt: string | null;
+	creditGrant: {
+		id: string;
+	} | null;
+};
+
 export type PaymentItem = {
 	id: string;
 

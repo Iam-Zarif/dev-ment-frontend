@@ -1,31 +1,19 @@
-// src/app/payment/success/page.tsx
+import type { Metadata } from "next";
 
-import { CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import { PaymentSuccessView } from "@/modules/payment/views/payment-success-view";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ROUTES } from "@/lib/constants";
+export const metadata: Metadata = {
+	title: "Payment confirmation",
+	description: "Verify your checkout and return to billing.",
+};
 
-export default function PaymentSuccessPage() {
-	return (
-		<main className="flex min-h-screen items-center justify-center p-6">
-			<Card className="w-full max-w-lg">
-				<CardContent className="flex flex-col items-center gap-4 py-10 text-center">
-					<CheckCircle2 className="size-12 text-primary" />
+type PaymentSuccessPageProps = {
+	searchParams: Promise<{ session_id?: string | string[] }>;
+};
 
-					<h1 className="text-2xl font-semibold">Checkout completed</h1>
+export default async function PaymentSuccessPage({ searchParams }: PaymentSuccessPageProps) {
+	const params = await searchParams;
+	const sessionId = typeof params.session_id === "string" ? params.session_id : null;
 
-					<p className="text-sm text-muted-foreground">
-						Stripe is confirming the payment through the secure webhook. Your credits will appear
-						automatically after confirmation.
-					</p>
-
-					<Button asChild>
-						<Link href={ROUTES.RECRUITER_BILLING}>View billing</Link>
-					</Button>
-				</CardContent>
-			</Card>
-		</main>
-	);
+	return <PaymentSuccessView sessionId={sessionId} />;
 }
